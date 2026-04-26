@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CHAMOSLANDIA LOL</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="bg-grid"></div>
+  <div class="bg-vignette"></div>
+  <div class="bg-topline"></div>
+
+  <div class="container">
+
+    <!-- HEADER CENTRADO -->
+    <header>
+      <div class="header-center">
+        <h1>CHAMOSLANDIA <span>LOL</span></h1>
+        <span class="last-update" id="lastUpdate">—</span>
+      </div>
+      <button class="btn-update" id="btnUpdate" onclick="actualizarElo()">
+        <span class="btn-icon">↻</span> Actualizar ELO
+      </button>
+    </header>
+
+    <!-- LAYOUT: tabla + gráfico -->
+    <div class="main-layout">
+      <div>
+        <div class="table-wrapper">
+          <div class="loading" id="loading">
+            <div class="spinner"></div> Cargando jugadores...
+          </div>
+          <div class="error-msg" id="errorMsg" style="display:none">
+            ⚠️ No se pudo conectar al servidor. ¿Está corriendo en localhost:3000?
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th class="col-rank">#</th>
+                <th class="col-name">JUGADOR</th>
+                <th class="col-account">OP.GG</th>
+                <th class="col-elo">ELO</th>
+                <th class="col-lp">LP</th>
+                <th class="col-wl">W / L</th>
+                <th class="col-wr">WR</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- GRÁFICO -->
+      <div class="chart-panel">
+        <div class="chart-header">
+          <span class="chart-title">Historial ELO — Últimos 2 meses</span>
+          <div class="chart-tabs">
+            <button class="chart-btn chart-btn--active" data-mode="soloQ" onclick="updateChartMode('soloQ')">Solo Q</button>
+            <button class="chart-btn" data-mode="flexQ" onclick="updateChartMode('flexQ')">Flex Q</button>
+          </div>
+        </div>
+        <div class="chart-area">
+          <canvas id="eloChart"></canvas>
+          <div class="chart-no-data" id="chartNoData" style="display:none">
+            <div class="chart-no-data-icon">📊</div>
+            <p>El gráfico aparecerá después<br>del primer <strong>Actualizar ELO</strong></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL INFERIOR: PERFIL + PARTIDAS -->
+    <div class="player-profile-section" id="playerProfileSection" style="display:none">
+      <div class="profile-tabs" id="profileTabs"></div>
+      <div class="profile-content">
+        <div class="profile-loading" id="profileLoading" style="display:none">
+          <div class="spinner"></div> Cargando perfil...
+        </div>
+        <div id="profileData"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
