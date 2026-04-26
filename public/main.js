@@ -128,16 +128,15 @@ function getChampIconUrl(champName) {
 }
 
 function getRoleIconUrl(role) {
-  const map = {
-    TOP:     "top",
-    JUNGLE:  "jungle",
-    MIDDLE:  "mid",
-    BOTTOM:  "bottom",
-    UTILITY: "support",
+  // SVGs inline como data URIs — no dependen de CDN externo
+  const svgs = {
+    TOP: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" opacity="0.8"><path d="M5 3h14v6l-4 4 4 4v4H5v-6l4-4-4-4V3zm2 2v3.17l4 4 4-4V5H7zm0 10v4h10v-3.17l-4-4-4 4V15z"/></svg>`,
+    JUNGLE: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" opacity="0.8"><path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-2.3A4.49 4.49 0 0 0 8 20c4 0 4-2 8-2s4 2 8 2v-2c-4 0-4-2-8-2-1.13 0-1.9.16-2.53.33C14.28 12.82 16 10.5 17 8z"/></svg>`,
+    MIDDLE: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" opacity="0.8"><path d="M3 3h8v2H5v4H3V3zm18 0v6h-2V5h-6V3h8zM3 21v-6h2v4h6v2H3zm16-6h2v6h-8v-2h6v-4zM8 8h8v8H8V8zm2 2v4h4v-4h-4z"/></svg>`,
+    BOTTOM: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" opacity="0.8"><path d="M19 15l-6 6-1.42-1.42 4.58-4.58H2v-2h14.17l-4.58-4.59L13 7l6 6z"/></svg>`,
+    UTILITY: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" opacity="0.8"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`,
   };
-  const r = map[role] || map[role?.toUpperCase()] || null;
-  if (!r) return null;
-  return `https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/position-icons/position-${r}.png`;
+  return svgs[role?.toUpperCase()] || null;
 }
 
 async function fetchDDragonVersion() {
@@ -891,7 +890,7 @@ function renderMatchHistory(matches, container, player) {
             <img class="mc-champ-img" src="${champIcon}" alt="${m.champion}"
               onerror="this.style.opacity='0.3'">
             <span class="mc-champ-lv">${m.champLevel || ""}</span>
-            ${(() => { const roleUrl = getRoleIconUrl(m.role); return roleUrl ? `<img class="mc-role-icon" src="${roleUrl}" alt="${m.role}" onerror="this.style.display='none'">` : ""; })()}
+            ${(() => { const svg = getRoleIconUrl(m.role); return svg ? `<div class="mc-role-icon">${svg}</div>` : ""; })()}
           </div>
           <div class="mc-spells">
             ${(m.summoners || []).map(s =>
