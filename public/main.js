@@ -790,7 +790,7 @@ async function loadMatchHistory(player) {
   container.innerHTML = `<div class="pf-loading"><div class="spinner"></div> Cargando partidas...</div>`;
 
   try {
-    const res = await fetch(/api/matches/${player.puuid});
+    const res = await fetch(`/api/matches/${player.puuid}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const matches = await res.json();
     renderMatchHistory(matches, container, player);
