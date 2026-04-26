@@ -861,9 +861,9 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
 
 .mc-card:hover { filter: brightness(1.06); }
 
-/* Fondo completo por resultado */
-.mc-card.mc-win  { background: #1a3a2a; }
-.mc-card.mc-loss { background: #3a1a1a; }
+/* Fondo completo por resultado — semitransparente para ver el fondo */
+.mc-card.mc-win  { background: rgba(20, 60, 35, 0.55); backdrop-filter: blur(6px); }
+.mc-card.mc-loss { background: rgba(60, 20, 20, 0.55); backdrop-filter: blur(6px); }
 
 /* COL 1: META — color sólido más oscuro */
 .mc-meta {
@@ -876,8 +876,8 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
   height: 100%;
 }
 
-.mc-card.mc-win  .mc-meta { background: #0f2a1a; }
-.mc-card.mc-loss .mc-meta { background: #2a0f0f; }
+.mc-card.mc-win  .mc-meta { background: rgba(10, 35, 20, 0.7); }
+.mc-card.mc-loss .mc-meta { background: rgba(40, 10, 10, 0.7); }
 
 .mc-queue {
   font-size: 0.68rem;
@@ -938,6 +938,18 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
   font-weight: 700;
   padding: 1px 5px;
   border-radius: 3px;
+}
+
+/* Ícono de línea (role) */
+.mc-role-icon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  opacity: 0.75;
+  filter: brightness(0) invert(1);
+  position: absolute;
+  top: -4px;
+  left: -4px;
 }
 
 .mc-spells { display: flex; gap: 3px; }
