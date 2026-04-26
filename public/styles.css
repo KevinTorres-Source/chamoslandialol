@@ -10,10 +10,10 @@
   --text-muted:#6b7a8d;
   --accent:    #c89b3c;
   --radius:    6px;
-  /* Tipografías LoL */
-  --font-title: 'Cinzel', 'Rajdhani', serif;
-  --font-body:  'Noto Sans', 'Inter', sans-serif;
-  --font-ui:    'Cinzel', 'Rajdhani', serif;
+  /* Tipografías modernas */
+  --font-title: 'Barlow Condensed', 'Rajdhani', sans-serif;
+  --font-body:  'Inter', sans-serif;
+  --font-ui:    'Barlow Condensed', 'Rajdhani', sans-serif;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -144,10 +144,10 @@ header {
 }
 
 h1 {
-  font-family: 'Cinzel', serif;
-  font-size: 2.8rem;
-  font-weight: 700;
-  letter-spacing: 6px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 3.4rem;
+  font-weight: 800;
+  letter-spacing: 12px;
   color: #fff;
   text-transform: uppercase;
 }
@@ -171,11 +171,11 @@ h1 span { color: var(--accent); }
   background: transparent;
   border: 1px solid var(--border);
   color: var(--text);
-  font-family: 'Cinzel', serif;
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 2px;
-  padding: 10px 20px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  padding: 10px 24px;
   border-radius: var(--radius);
   cursor: pointer;
   transition: all 0.2s;
@@ -224,10 +224,10 @@ thead tr {
 
 th {
   padding: 14px 16px;
-  font-family: 'Cinzel', serif;
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 2px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 3px;
   text-transform: uppercase;
   color: var(--text-muted);
   text-align: left;
@@ -271,7 +271,7 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
 /* MEDALLAS TOP 3                  */
 /* =============================== */
 .medal { font-size: 1.4rem; line-height: 1; display: inline-block; }
-.rank-num { font-family: 'Cinzel', serif; font-size: 1.1rem; font-weight: 700; color: #3a4a60; }
+.rank-num { font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 700; color: #3a4a60; }
 
 /* =============================== */
 /* ÍCONO DE INVOCADOR              */
@@ -298,7 +298,7 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
   border: 1px solid var(--border);
   color: var(--text-muted);
   font-size: 0.58rem;
-  font-family: 'Cinzel', serif;
+  font-family: 'Barlow Condensed', sans-serif;
   font-weight: 600;
   letter-spacing: 0.5px;
   padding: 1px 5px;
@@ -344,7 +344,7 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
   display: inline-block;
   width: fit-content;
   font-size: 0.65rem;
-  font-family: 'Cinzel', serif;
+  font-family: 'Barlow Condensed', sans-serif;
   font-weight: 700;
   letter-spacing: 1px;
   padding: 2px 7px;
@@ -368,7 +368,7 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
 
 .queue-label {
   font-size: 0.6rem;
-  font-family: 'Cinzel', serif;
+  font-family: 'Barlow Condensed', sans-serif;
   letter-spacing: 1px;
   color: var(--text-muted);
   background: rgba(255,255,255,0.04);
@@ -390,14 +390,14 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
   padding: 2px 9px;
   border-radius: 4px;
   border: 1px solid;
-  font-family: 'Cinzel', serif;
+  font-family: 'Barlow Condensed', sans-serif;
   font-size: 0.88rem;
   font-weight: 600;
   letter-spacing: 1px;
   text-transform: uppercase;
 }
 
-.lp-val { font-family: 'Cinzel', serif; font-size: 0.92rem; font-weight: 600; }
+.lp-val { font-family: 'Barlow Condensed', sans-serif; font-size: 0.92rem; font-weight: 600; }
 
 .wins   { color: #4ade80; font-weight: 500; }
 .losses { color: #f87171; font-weight: 500; }
@@ -464,7 +464,7 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
 }
 
 .chart-title {
-  font-family: 'Cinzel', serif;
+  font-family: 'Barlow Condensed', sans-serif;
   font-size: 0.85rem;
   font-weight: 600;
   letter-spacing: 2px;
@@ -475,7 +475,7 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
 .chart-tabs { display: flex; gap: 6px; }
 
 .chart-btn {
-  font-family: 'Cinzel', serif;
+  font-family: 'Barlow Condensed', sans-serif;
   font-size: 0.8rem;
   font-weight: 600;
   letter-spacing: 1px;
@@ -517,7 +517,7 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
 }
 
 .ctt-date {
-  font-family:    'Noto Sans', sans-serif;
+  font-family:    'Inter', sans-serif;
   font-size:      0.68rem;
   color:          #4a5a72;
   letter-spacing: 0.5px;
@@ -546,7 +546,7 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
 }
 
 .ctt-name {
-  font-family:    'Cinzel', serif;
+  font-family:    'Barlow Condensed', sans-serif;
   font-size:      0.82rem;
   font-weight:    700;
   color:          #e2e8f0;
@@ -555,7 +555,7 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
 }
 
 .ctt-elo {
-  font-family: 'Noto Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size:   0.75rem;
   color:       #6b7a8d;
   white-space: nowrap;
@@ -601,7 +601,7 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
   gap: 6px;
   font-size: 0.75rem;
   color: #94a3b8;
-  font-family: 'Noto Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   cursor: pointer;
   transition: color 0.15s;
 }
@@ -640,10 +640,10 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
 .profile-tab {
   flex-shrink: 0;
   padding: 14px 22px;
-  font-family: 'Cinzel', serif;
-  font-size: 0.72rem;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.85rem;
   font-weight: 700;
-  letter-spacing: 2px;
+  letter-spacing: 3px;
   text-transform: uppercase;
   color: var(--text-muted);
   cursor: pointer;
@@ -705,7 +705,7 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
   border: 1px solid var(--border);
   color: #9aa4b2;
   font-size: 0.58rem;
-  font-family: 'Cinzel', serif;
+  font-family: 'Barlow Condensed', sans-serif;
   font-weight: 700;
   padding: 1px 7px;
   border-radius: 3px;
@@ -716,12 +716,13 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
 .pf-name-wrap { display: flex; flex-direction: column; gap: 5px; }
 
 .pf-name {
-  font-family: 'Cinzel', serif;
-  font-size: 1.7rem;
-  font-weight: 700;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
   color: #fff;
-  letter-spacing: 1px;
+  letter-spacing: 3px;
   line-height: 1;
+  text-transform: uppercase;
 }
 
 .pf-tag {
@@ -736,7 +737,7 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
   align-items: center;
   gap: 4px;
   font-size: 0.72rem;
-  font-family: 'Cinzel', serif;
+  font-family: 'Barlow Condensed', sans-serif;
   font-weight: 700;
   letter-spacing: 1px;
   padding: 3px 10px;
@@ -780,7 +781,7 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
 }
 
 .pf-stat-val {
-  font-family: 'Cinzel', serif;
+  font-family: 'Barlow Condensed', sans-serif;
   font-size: 1.5rem;
   font-weight: 700;
   color: #fff;
@@ -793,7 +794,7 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
   color: #6b7a8d;
   text-align: center;
   white-space: nowrap;
-  font-family: 'Noto Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
 /* ---- BARRA DE LP ---- */
@@ -810,7 +811,7 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
   justify-content: space-between;
   font-size: 0.75rem;
   color: #6b7a8d;
-  font-family: 'Cinzel', serif;
+  font-family: 'Barlow Condensed', sans-serif;
   font-weight: 600;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -832,7 +833,7 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
 
 /* ---- TÍTULO SECCIÓN ---- */
 .pf-matches-title {
-  font-family: 'Cinzel', serif;
+  font-family: 'Barlow Condensed', sans-serif;
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 2px;
@@ -881,12 +882,12 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
   color: #6b7a8d;
   text-transform: uppercase;
   letter-spacing: 1px;
-  font-family: 'Cinzel', serif;
+  font-family: 'Barlow Condensed', sans-serif;
   font-weight: 600;
 }
 
 .mc-result {
-  font-family: 'Cinzel', serif;
+  font-family: 'Barlow Condensed', sans-serif;
   font-size: 0.88rem;
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -895,7 +896,7 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
 .mc-d { color: #f87171; }
 
 .mc-dur  { font-size: 0.68rem; color: #6b7a8d; }
-.mc-lp   { font-size: 0.72rem; font-weight: 700; font-family: 'Cinzel', serif; }
+.mc-lp   { font-size: 0.72rem; font-weight: 700; font-family: 'Barlow Condensed', sans-serif; }
 .mc-ago  { font-size: 0.6rem; color: #4a5a72; }
 
 /* COL 2: CAMPEÓN */
@@ -934,7 +935,7 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
   border: 1px solid var(--border);
   color: #9aa4b2;
   font-size: 0.55rem;
-  font-family: 'Cinzel', serif;
+  font-family: 'Barlow Condensed', sans-serif;
   font-weight: 700;
   padding: 1px 4px;
   border-radius: 3px;
@@ -969,7 +970,7 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
 }
 
 .mc-kda-nums {
-  font-family: 'Cinzel', serif;
+  font-family: 'Barlow Condensed', sans-serif;
   font-size: 1.1rem;
   font-weight: 700;
   line-height: 1;
@@ -983,13 +984,13 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
 .mc-kda-ratio {
   font-size: 0.72rem;
   font-weight: 600;
-  font-family: 'Noto Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
 .mc-cs {
   font-size: 0.68rem;
   color: #6b7a8d;
-  font-family: 'Noto Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
 /* COL 4: ÍTEMS */
@@ -1056,7 +1057,7 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 72px;
-  font-family: 'Noto Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
 /* PLACEHOLDER / MENSAJES */
