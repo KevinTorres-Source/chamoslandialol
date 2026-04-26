@@ -242,25 +242,35 @@ function eloScoreToLabel(score) {
  * basado en el score actual de cada jugador.
  * Esto da datos reales y contextualizados al gráfico desde el primer día.
  */
+/**
+ * Snapea un eloScore (número) a un valor válido:
+ * - LP siempre entre 0 y 99
+ * - Tier/rank se mantiene según la escala interna
+ * Esto evita valores imposibles como "GOLD 359 LP"
+ */
+function clampToValidElo(score) {
+  if (!score || score <= 0) return 0;
+  const tier = Math.floor(score / 10000);       // 1=IRON … 10=CHALLENGER
+  const rank = Math.floor((score % 10000) / 1000); // 0-3 → IV-I
+  const lp   = score % 1000;
+
+  // Clamp LP a 0-99 (100 LP = sube de división, no es un estado válido)
+  const clampedLp = Math.min(99, Math.max(0, lp));
+  return tier * 10000 + rank * 1000 + clampedLp;
+}
+
 function generateSeasonHistory(players, mode) {
-  const now = Date.now();
-  // Últimos 2 meses: desde el 1 de marzo 2025
+  const now         = Date.now();
   const seasonStart = new Date("2025-04-01").getTime();
-  const totalMs = now - seasonStart;
-  // Un punto cada 1 día desde abril
-  const intervalMs = 1 * 24 * 60 * 60 * 1000;
-  const numPoints = Math.floor(totalMs / intervalMs) + 1;
+  const totalMs     = now - seasonStart;
+  const intervalMs  = 24 * 60 * 60 * 1000; // 1 punto por día
+  const numPoints   = Math.floor(totalMs / intervalMs) + 1;
 
   const labels = [];
   const datasets = players.map((p, idx) => {
     const finalScore = mode === "soloQ" ? eloScore(p.soloQ) : eloScore(p.flexQ);
     const color = CHART_COLORS[idx % CHART_COLORS.length];
-    return {
-      label: p.name,
-      color,
-      finalScore,
-      data: []
-    };
+    return { label: p.name, color, finalScore, data: [] };
   });
 
   for (let i = 0; i < numPoints; i++) {
@@ -268,28 +278,29 @@ function generateSeasonHistory(players, mode) {
     const d  = new Date(ts);
     labels.push(`${d.getDate()}/${d.getMonth() + 1}`);
 
-    // Progreso relativo: 0 al inicio, 1 al final
-    const progress = i / (numPoints - 1);
+    const progress = numPoints > 1 ? i / (numPoints - 1) : 1;
 
     datasets.forEach(ds => {
-      if (ds.finalScore === 0) {
-        ds.data.push(null);
-        return;
-      }
-      // Punto de partida: ~GOLD IV (score ~40000) con variación
-      const playerSeed = ds.label.charCodeAt(0) + ds.label.charCodeAt(ds.label.length - 1);
-      const startTierOffset = ((playerSeed % 5) - 2) * 5000; // variación entre jugadores
-      const startScore = 40000 + startTierOffset;
+      if (ds.finalScore === 0) { ds.data.push(null); return; }
 
-      // Trayectoria con curva natural (subidas y bajadas) + tendencia hacia finalScore
-      const baseProgress = startScore + (ds.finalScore - startScore) * easeInOutQuad(progress);
-      // Ruido basado en senoidal + pseudoaleatorio determinístico
-      const noise = Math.sin(i * 0.7 + playerSeed) * 3000 + Math.sin(i * 1.3 + playerSeed * 0.5) * 1500;
-      // Al final, convergemos al score real
-      const blend = progress > 0.85 ? (progress - 0.85) / 0.15 : 0;
-      const val = Math.round(baseProgress + noise * (1 - blend));
+      // Seed determinístico por jugador
+      const seed = ds.label.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
 
-      ds.data.push(Math.max(10000, val)); // mínimo IRON IV
+      // Punto de partida: 1 tier por debajo del actual, mínimo SILVER IV
+      const startScore = Math.max(30000, ds.finalScore - 15000);
+
+      // Trayectoria suave hacia el score final
+      const base = startScore + (ds.finalScore - startScore) * easeInOutQuad(progress);
+
+      // Ruido pequeño: máximo ±800 (menos de 1 división), se reduce al final
+      const noiseAmp = 800 * (1 - progress * 0.7);
+      const noise    = Math.sin(i * 0.5 + seed * 0.1) * noiseAmp
+                     + Math.sin(i * 1.1 + seed * 0.3) * noiseAmp * 0.4;
+
+      // Aplicar ruido y clamp a LP válido (0-99 dentro de cada división)
+      const raw      = Math.round(base + noise);
+      const clamped  = clampToValidElo(Math.max(10000, raw));
+      ds.data.push(clamped);
     });
   }
 
@@ -298,6 +309,12 @@ function generateSeasonHistory(players, mode) {
 
 function easeInOutQuad(t) {
   return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+}
+
+function renderSeasonChart() {
+  if (allPlayers.length === 0) return;
+  const { labels, datasets } = generateSeasonHistory(allPlayers, chartMode);
+  renderChart(labels, datasets);
 }
 
 function buildChartDatasets(history, mode, players) {
@@ -556,9 +573,8 @@ async function cargarHistorial(players) {
     }
   } catch {}
 
-  // Sin datos reales: muestra mensaje en el gráfico
-  const noDataEl = document.getElementById("chartNoData");
-  if (noDataEl) noDataEl.style.display = "flex";
+  // Sin datos reales: usa simulación corregida como placeholder
+  renderSeasonChart();
 }
 
 // ===============================
