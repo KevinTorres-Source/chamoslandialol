@@ -535,15 +535,14 @@ function updateChartMode(mode) {
   document.querySelectorAll(".chart-btn").forEach(btn =>
     btn.classList.toggle("chart-btn--active", btn.dataset.mode === mode)
   );
-  renderSeasonChart();
+  cargarHistorial(allPlayers);
 }
 
 /**
- * Carga historial del servidor; si tiene menos de 2 puntos,
- * usa datos generados desde inicio de temporada para que el gráfico no quede plano.
+ * Carga historial real desde el servidor.
+ * Si no hay datos aún, muestra el mensaje "sin datos" en el gráfico.
  */
 async function cargarHistorial(players) {
-  let usedServerData = false;
   try {
     const res = await fetch("/api/history");
     if (res.ok) {
@@ -552,20 +551,14 @@ async function cargarHistorial(players) {
         const labels   = buildChartLabels(history);
         const datasets = buildChartDatasets(history, chartMode, players);
         renderChart(labels, datasets);
-        usedServerData = true;
+        return;
       }
     }
   } catch {}
 
-  if (!usedServerData) {
-    renderSeasonChart();
-  }
-}
-
-function renderSeasonChart() {
-  if (allPlayers.length === 0) return;
-  const { labels, datasets } = generateSeasonHistory(allPlayers, chartMode);
-  renderChart(labels, datasets);
+  // Sin datos reales: muestra mensaje en el gráfico
+  const noDataEl = document.getElementById("chartNoData");
+  if (noDataEl) noDataEl.style.display = "flex";
 }
 
 // ===============================
