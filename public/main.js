@@ -127,6 +127,19 @@ function getChampIconUrl(champName) {
   return `https://ddragon.leagueoflegends.com/cdn/${ddVersion}/img/champion/${name}.png`;
 }
 
+function getRoleIconUrl(role) {
+  const map = {
+    TOP:     "top",
+    JUNGLE:  "jungle",
+    MIDDLE:  "mid",
+    BOTTOM:  "bottom",
+    UTILITY: "support",
+  };
+  const r = map[role] || map[role?.toUpperCase()] || null;
+  if (!r) return null;
+  return `https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/position-icons/position-${r}.png`;
+}
+
 async function fetchDDragonVersion() {
   try {
     const res  = await fetch("https://ddragon.leagueoflegends.com/api/versions.json");
@@ -878,6 +891,7 @@ function renderMatchHistory(matches, container, player) {
             <img class="mc-champ-img" src="${champIcon}" alt="${m.champion}"
               onerror="this.style.opacity='0.3'">
             <span class="mc-champ-lv">${m.champLevel || ""}</span>
+            ${(() => { const roleUrl = getRoleIconUrl(m.role); return roleUrl ? `<img class="mc-role-icon" src="${roleUrl}" alt="${m.role}" onerror="this.style.display='none'">` : ""; })()}
           </div>
           <div class="mc-spells">
             ${(m.summoners || []).map(s =>
