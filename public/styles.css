@@ -209,10 +209,11 @@ h1 span { color: var(--accent); }
 /* TABLA                           */
 /* =============================== */
 .table-wrapper {
-  border: 1px solid var(--border);
+  border: 1px solid rgba(200,155,60,0.2);
   border-radius: 12px;
   overflow: hidden;
   background: var(--bg2);
+  box-shadow: 0 0 18px rgba(200,155,60,0.07), 0 0 1px rgba(200,155,60,0.3), inset 0 0 30px rgba(200,155,60,0.02);
 }
 
 table { width: 100%; border-collapse: collapse; }
@@ -447,12 +448,13 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
   position: sticky;
   top: 24px;
   background: var(--bg2);
-  border: 1px solid var(--border);
+  border: 1px solid rgba(76,140,210,0.22);
   border-radius: 12px;
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 16px;
+  box-shadow: 0 0 20px rgba(76,140,210,0.08), 0 0 1px rgba(76,140,210,0.3), inset 0 0 30px rgba(76,140,210,0.02);
 }
 
 .chart-header {
@@ -622,9 +624,10 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
 .player-profile-section {
   margin-top: 32px;
   background: var(--bg2);
-  border: 1px solid var(--border);
+  border: 1px solid rgba(200,155,60,0.2);
   border-radius: 12px;
   overflow: hidden;
+  box-shadow: 0 0 20px rgba(200,155,60,0.07), 0 0 1px rgba(200,155,60,0.25), inset 0 0 40px rgba(200,155,60,0.02);
 }
 
 /* TABS de jugadores */
@@ -755,11 +758,12 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
   display: flex;
   align-items: center;
   background: var(--bg3);
-  border: 1px solid var(--border);
+  border: 1px solid rgba(200,155,60,0.15);
   border-radius: 8px;
   padding: 16px 0;
   margin-bottom: 16px;
   overflow-x: auto;
+  box-shadow: 0 0 12px rgba(200,155,60,0.05), inset 0 0 20px rgba(200,155,60,0.02);
 }
 
 .pf-stat {
@@ -800,9 +804,10 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
 .pf-lpbar-wrap {
   margin-bottom: 20px;
   background: var(--bg3);
-  border: 1px solid var(--border);
+  border: 1px solid rgba(200,155,60,0.15);
   border-radius: 8px;
   padding: 14px 18px;
+  box-shadow: 0 0 12px rgba(200,155,60,0.05);
 }
 
 .pf-lpbar-label {
@@ -1242,4 +1247,223 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
   /* Ocultar ítems y equipos en móvil */
   .mc-items  { display: none; }
   .mc-teams  { display: none; }
+}
+
+/* =============================== */
+/* PARTIDA EN VIVO                 */
+/* =============================== */
+.lg-panel {
+  margin-bottom: 20px;
+  border: 1px solid rgba(248,113,113,0.3);
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(15, 8, 8, 0.6);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 0 24px rgba(248,113,113,0.08), 0 0 1px rgba(248,113,113,0.35);
+  animation: lgPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes lgPulse {
+  0%,100% { box-shadow: 0 0 24px rgba(248,113,113,0.08), 0 0 1px rgba(248,113,113,0.35); }
+  50%      { box-shadow: 0 0 32px rgba(248,113,113,0.18), 0 0 2px rgba(248,113,113,0.55); }
+}
+
+.lg-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 16px;
+  background: rgba(248,113,113,0.08);
+  border-bottom: 1px solid rgba(248,113,113,0.18);
+}
+
+.lg-live-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  color: #f87171;
+  text-transform: uppercase;
+}
+
+.lg-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #f87171;
+  flex-shrink: 0;
+  animation: lgDot 1.2s ease-in-out infinite;
+}
+
+@keyframes lgDot {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.4; transform: scale(0.7); }
+}
+
+.lg-mode {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.5);
+}
+
+.lg-timer {
+  margin-left: auto;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  letter-spacing: 1px;
+}
+
+/* BODY — dos equipos lado a lado */
+.lg-body {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 0;
+  padding: 12px 0;
+}
+
+.lg-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.2);
+  padding: 0 8px;
+  border-left: 1px solid rgba(255,255,255,0.06);
+  border-right: 1px solid rgba(255,255,255,0.06);
+}
+
+.lg-team-block { padding: 0 8px; }
+
+.lg-team-header {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  opacity: 0.8;
+  margin-bottom: 8px;
+  padding: 0 6px;
+}
+
+/* Fila de jugador */
+.lg-row {
+  display: grid;
+  grid-template-columns: 36px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 6px;
+  border-radius: 6px;
+  margin-bottom: 3px;
+  transition: background 0.15s;
+}
+
+.lg-row:hover { background: rgba(255,255,255,0.04); }
+
+.lg-self {
+  background: rgba(200,155,60,0.08);
+  border: 1px solid rgba(200,155,60,0.2);
+}
+
+.lg-champ-img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(255,255,255,0.12);
+  display: block;
+}
+
+.lg-champ-ph {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+}
+
+.lg-row-name {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.lg-summ-name {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lg-self .lg-summ-name { color: var(--accent); }
+
+.lg-games {
+  font-size: 0.62rem;
+  color: rgba(255,255,255,0.3);
+  font-family: 'DM Sans', sans-serif;
+}
+
+.lg-row-ranked {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.lg-tier-icon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.lg-row-ranked-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+}
+
+.lg-tier {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.lg-lp {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.62rem;
+  color: rgba(255,255,255,0.4);
+  white-space: nowrap;
+}
+
+.lg-wr {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.62rem;
+  font-weight: 600;
+}
+
+.lg-unranked {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.25);
+}
+
+/* Móvil — equipos apilados */
+@media (max-width: 600px) {
+  .lg-body { grid-template-columns: 1fr; }
+  .lg-divider { padding: 6px 0; border: none; border-top: 1px solid rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.06); margin: 4px 0; }
+  .lg-row { grid-template-columns: 30px 1fr auto; gap: 6px; }
+  .lg-champ-img, .lg-champ-ph { width: 30px; height: 30px; }
 }
