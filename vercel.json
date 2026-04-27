@@ -2,8 +2,9 @@
   "version": 2,
   "rewrites": [
     { "source": "/api/matches/:puuid", "destination": "/api/matches/[puuid]" },
-    { "source": "/api/:path*", "destination": "/api/:path*" },
-    { "source": "/:path*", "destination": "/public/:path*" }
+    { "source": "/api/live/:puuid",    "destination": "/api/live/[puuid]" },
+    { "source": "/api/:path*",         "destination": "/api/:path*" },
+    { "source": "/:path*",             "destination": "/public/:path*" }
   ],
   "functions": {
     "api/**/*.js": {
