@@ -1119,7 +1119,7 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
 .pf-opgg-link:hover { text-decoration: underline; }
 
 /* =============================== */
-/* RESPONSIVE                      */
+/* RESPONSIVE — TABLET             */
 /* =============================== */
 @media (max-width: 1200px) {
   .main-layout { grid-template-columns: 1fr; }
@@ -1127,16 +1127,127 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
 }
 
 @media (max-width: 900px) {
-  .mc-card { grid-template-columns: 72px 80px 110px 1fr; }
+  .mc-card { grid-template-columns: 100px 90px 140px 1fr; }
   .mc-teams { display: none; }
 }
 
-@media (max-width: 700px) {
-  h1 { font-size: 1.8rem; }
-  .col-lp, .col-wr { display: none; }
-  td, th { padding: 10px 8px; }
+/* =============================== */
+/* RESPONSIVE — MÓVIL              */
+/* =============================== */
+@media (max-width: 600px) {
+
+  /* CONTAINER */
+  .container { padding: 16px 12px 40px; }
+
+  /* HEADER — título en una línea, más pequeño */
+  h1 {
+    font-size: 1.6rem;
+    letter-spacing: 4px;
+    white-space: nowrap;
+  }
+  .last-update { font-size: 0.65rem; }
+  .btn-update { font-size: 0.8rem; padding: 9px 18px; letter-spacing: 2px; }
+
+  /* TABLA — solo mostrar #, jugador, elo */
+  .table-wrapper { overflow-x: hidden; }
+  .col-account, .col-lp, .col-wl, .col-wr { display: none; }
+  th, td { padding: 10px 8px; }
+  .col-rank { width: 36px; }
+  .col-name { min-width: 120px; }
+  .col-elo  { min-width: 110px; }
+
+  .player-name  { font-size: 0.82rem; }
+  .player-tag   { font-size: 0.65rem; }
   .account-icon { width: 34px; height: 34px; }
-  .mc-card { grid-template-columns: 72px 80px 1fr; }
-  .mc-items, .mc-teams { display: none; }
-  .pf-stats-row { flex-wrap: wrap; }
+  .player-level-badge { font-size: 0.52rem; padding: 1px 4px; }
+  .icon-wrapper { margin-right: 2px; }
+
+  .tier-badge {
+    font-size: 0.72rem;
+    padding: 2px 5px;
+    letter-spacing: 0.3px;
+  }
+  .queue-row { min-height: 22px; gap: 4px; }
+  .queue-row--flex { margin-top: 3px; font-size: 0.8em; }
+  .tier-icon { width: 18px; height: 18px; }
+  .queue-label { display: none; }
+
+  /* GRÁFICO */
+  .chart-area { height: 200px; }
+  .chart-title { font-size: 0.7rem; letter-spacing: 0.5px; }
+  .chart-btn { font-size: 0.72rem; padding: 4px 10px; }
+  .chart-legend-custom { gap: 6px 10px; }
+  .legend-item { font-size: 0.68rem; }
+
+  /* PERFIL PANEL */
+  .player-profile-section { margin-top: 20px; }
+  .profile-content { padding: 14px 14px 20px; }
+  .profile-tab { padding: 11px 12px; font-size: 0.72rem; letter-spacing: 1px; }
+
+  /* Header perfil */
+  .pf-header { gap: 12px; margin-bottom: 14px; }
+  .pf-icon   { width: 52px; height: 52px; }
+  .pf-name   { font-size: 1.2rem; letter-spacing: 1px; }
+  .pf-tag    { font-size: 0.82rem; }
+  .pf-level  { font-size: 0.52rem; padding: 1px 5px; }
+
+  /* Stats — grid 2 columnas en lugar de fila horizontal que se desborda */
+  .pf-stats-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 8px 0;
+    overflow-x: visible;
+    gap: 0;
+  }
+  .pf-stat-divider { display: none; }
+  .pf-stat {
+    padding: 10px 8px;
+    min-width: unset;
+    border-bottom: 1px solid var(--border);
+  }
+  .pf-stat:nth-last-child(-n+2) { border-bottom: none; }
+  .pf-stat-val { font-size: 1rem; white-space: normal; text-align: center; }
+  .pf-stat-lbl { font-size: 0.6rem; }
+
+  /* LP bar */
+  .pf-lpbar-wrap { margin-bottom: 14px; padding: 10px 14px; }
+  .pf-lpbar-label { font-size: 0.65rem; }
+
+  /* Título sección partidas */
+  .pf-matches-title { font-size: 0.7rem; letter-spacing: 1.5px; }
+
+  /* MATCH CARDS — layout horizontal compacto */
+  .mc-list { gap: 6px; }
+
+  .mc-card {
+    grid-template-columns: 90px 80px 1fr;
+    grid-template-rows: 1fr;
+    min-height: 76px;
+  }
+
+  /* Col meta compacta */
+  .mc-meta { padding: 8px 6px; gap: 2px; }
+  .mc-queue  { font-size: 0.58rem; }
+  .mc-result { font-size: 0.85rem; }
+  .mc-dur    { font-size: 0.6rem; }
+  .mc-ago    { font-size: 0.58rem; }
+  .mc-lp     { font-size: 0.7rem; }
+
+  /* Col campeón compacta */
+  .mc-champ-col { padding: 8px 6px; gap: 4px; }
+  .mc-champ-img { width: 44px; height: 44px; }
+  .mc-spell     { width: 16px; height: 16px; }
+  .mc-champ-lv  { font-size: 0.5rem; padding: 1px 3px; }
+  .mc-role-icon { width: 15px; height: 15px; }
+  .mc-role-icon svg { width: 11px; height: 11px; }
+
+  /* Col KDA ocupa el resto */
+  .mc-kda-col { padding: 8px 10px; gap: 2px; }
+  .mc-kda-nums { font-size: 1rem; }
+  .mc-kda-ratio { font-size: 0.68rem; }
+  .mc-cs        { font-size: 0.62rem; }
+
+  /* Ocultar ítems y equipos en móvil */
+  .mc-items  { display: none; }
+  .mc-teams  { display: none; }
 }
