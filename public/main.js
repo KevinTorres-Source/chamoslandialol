@@ -690,6 +690,7 @@ function selectPlayerProfile(name, players) {
   if (!player) return;
 
   renderProfileData(player);
+  checkLiveGame(player);
   loadMatchHistory(player);
 }
 
@@ -769,6 +770,9 @@ function renderProfileData(player) {
 
     ${lpBar}
 
+    <!-- PARTIDA EN VIVO -->
+    <div id="liveGameContainer"></div>
+
     <!-- ÚLTIMAS PARTIDAS -->
     <div class="pf-matches-title">ÚLTIMAS PARTIDAS RANKED</div>
     <div id="matchHistoryContainer">
@@ -799,6 +803,115 @@ function buildLPBar(soloQ) {
       </div>
     </div>
   `;
+}
+
+
+// ===============================
+// 🔴 PARTIDA EN VIVO
+// ===============================
+let liveGameInterval = null;
+
+async function checkLiveGame(player) {
+  const container = document.getElementById("liveGameContainer");
+  if (!container) return;
+
+  // Limpiar intervalo anterior
+  if (liveGameInterval) { clearInterval(liveGameInterval); liveGameInterval = null; }
+
+  container.innerHTML = "";
+
+  try {
+    const res  = await fetch(`/api/live/${player.puuid}`);
+    const data = await res.json();
+
+    if (!data || data.inGame === false || !data.gameId) return;
+
+    renderLiveGame(data, player, container);
+
+    // Actualizar el timer cada segundo
+    liveGameInterval = setInterval(() => {
+      const el = document.getElementById("liveGameTimer");
+      if (!el) { clearInterval(liveGameInterval); return; }
+      const elapsed = Math.floor((Date.now() - data.gameStartTime) / 1000);
+      el.textContent = formatDuration(elapsed);
+    }, 1000);
+
+  } catch {}
+}
+
+function formatDuration(secs) {
+  const m = Math.floor(secs / 60);
+  const s = String(secs % 60).padStart(2, "0");
+  return `${m}:${s}`;
+}
+
+function renderLiveGame(game, currentPlayer, container) {
+  const blue    = game.participants.filter(p => p.teamId === 100);
+  const red     = game.participants.filter(p => p.teamId === 200);
+  const elapsed = Math.floor((Date.now() - game.gameStartTime) / 1000);
+
+  const TIER_COLORS = {
+    IRON:"#6b7280", BRONZE:"#cd7f32", SILVER:"#aab4c8", GOLD:"#f0c060",
+    PLATINUM:"#4ac9a0", EMERALD:"#00e676", DIAMOND:"#4cc9f0",
+    MASTER:"#c084fc", GRANDMASTER:"#ff6b6b", CHALLENGER:"#f72585", UNRANKED:"#4a5a72"
+  };
+
+  const fmtRanked = (r) => {
+    if (!r || r.tier === "UNRANKED" || !r.tier) return `<span class="lg-unranked">Sin ranked</span>`;
+    const color = TIER_COLORS[r.tier] || "#fff";
+    const wr    = r.wr !== null ? `<span class="lg-wr" style="color:${r.wr>=55?'#4ade80':r.wr>=50?'#facc15':'#f87171'}">${r.wr}%</span>` : "";
+    return `<span class="lg-tier" style="color:${color}">${r.tier} ${r.rank}</span>
+            <span class="lg-lp">${r.lp} LP</span>${wr}`;
+  };
+
+  const getTierIcon = (tier) => {
+    if (!tier || tier === "UNRANKED") return "";
+    return `<img class="lg-tier-icon" src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-mini-crests/${tier.toLowerCase()}.png" onerror="this.style.display='none'">`;
+  };
+
+  const playerRow = (p) => {
+    const isSelf  = p.puuid === currentPlayer.puuid;
+    const champ   = p.championName ? getChampIconUrl(p.championName) : "";
+    const name    = (p.summonerName || "?").replace(/#.*$/, "").slice(0, 16);
+    const ranked  = p.ranked?.displayed;
+    const soloQ   = p.ranked?.soloQ;
+    const tierIcon = getTierIcon(ranked?.tier);
+
+    return `
+      <div class="lg-row${isSelf ? " lg-self" : ""}">
+        <div class="lg-row-champ">
+          ${champ ? `<img class="lg-champ-img" src="${champ}" onerror="this.style.opacity='0.3'">` : `<div class="lg-champ-ph"></div>`}
+        </div>
+        <div class="lg-row-name">
+          <span class="lg-summ-name">${name}</span>
+          ${soloQ && soloQ.tier !== "UNRANKED" ? `<span class="lg-games">${(soloQ.wins||0)+(soloQ.losses||0)} partidas</span>` : ""}
+        </div>
+        <div class="lg-row-ranked">
+          ${tierIcon}
+          <div class="lg-row-ranked-text">${fmtRanked(ranked)}</div>
+        </div>
+      </div>`;
+  };
+
+  const teamBlock = (team, label, color) => `
+    <div class="lg-team-block">
+      <div class="lg-team-header" style="color:${color}">${label}</div>
+      ${team.map(playerRow).join("")}
+    </div>`;
+
+  container.innerHTML = `
+    <div class="lg-panel">
+      <div class="lg-header">
+        <div class="lg-live-badge"><span class="lg-dot"></span>EN VIVO</div>
+        <span class="lg-mode">${game.gameMode}</span>
+        <span class="lg-timer" id="liveGameTimer">${formatDuration(elapsed)}</span>
+      </div>
+      <div class="lg-body">
+        ${teamBlock(blue, "Equipo Azul", "#60a5fa")}
+        <div class="lg-divider">VS</div>
+        ${teamBlock(red, "Equipo Rojo", "#f87171")}
+      </div>
+    </div>`;
 }
 
 // ===============================
