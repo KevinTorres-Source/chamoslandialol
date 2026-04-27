@@ -942,23 +942,15 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
 
 /* Ícono de línea (role) */
 .mc-role-icon {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
   position: absolute;
-  top: -4px;
-  left: -4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0,0,0,0.55);
+  top: -5px;
+  left: -5px;
   border-radius: 50%;
+  background: rgba(0,0,0,0.6);
   padding: 2px;
-}
-
-.mc-role-icon svg {
-  width: 14px;
-  height: 14px;
-  display: block;
 }
 
 .mc-spells { display: flex; gap: 3px; }
