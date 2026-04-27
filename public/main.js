@@ -128,12 +128,13 @@ function getChampIconUrl(champName) {
 }
 
 function getRoleIconUrl(role) {
+  const base = "https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions";
   const map = {
-    TOP:     "https://ddragon.leagueoflegends.com/cdn/img/position/Position_Grandmaster-Top.png",
-    JUNGLE:  "https://ddragon.leagueoflegends.com/cdn/img/position/Position_Grandmaster-Jungle.png",
-    MIDDLE:  "https://ddragon.leagueoflegends.com/cdn/img/position/Position_Grandmaster-Mid.png",
-    BOTTOM:  "https://ddragon.leagueoflegends.com/cdn/img/position/Position_Grandmaster-Bot.png",
-    UTILITY: "https://ddragon.leagueoflegends.com/cdn/img/position/Position_Grandmaster-Support.png",
+    TOP:     `${base}/icon-position-top.png`,
+    JUNGLE:  `${base}/icon-position-jungle.png`,
+    MIDDLE:  `${base}/icon-position-middle.png`,
+    BOTTOM:  `${base}/icon-position-bottom.png`,
+    UTILITY: `${base}/icon-position-utility.png`,
   };
   return map[role?.toUpperCase()] || null;
 }
