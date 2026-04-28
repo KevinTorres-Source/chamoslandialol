@@ -144,10 +144,10 @@ header {
 }
 
 h1 {
-  font-family: 'Cinzel', serif;
-  font-size: 2.8rem;
-  font-weight: 700;
-  letter-spacing: 6px;
+  font-family: 'Inter', sans-serif;
+  font-size: 2.6rem;
+  font-weight: 800;
+  letter-spacing: 10px;
   color: #fff;
   text-transform: uppercase;
 }
