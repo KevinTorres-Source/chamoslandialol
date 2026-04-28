@@ -849,56 +849,47 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
 }
 
 /* =============================== */
-/* MATCH CARDS — NUEVO LAYOUT      */
-/* Estilo lineal compacto          */
+/* MATCH CARDS — ESTILO REFERENCIA */
+/* =============================== */
+/* MATCH CARDS — COMPACTO          */
 /* =============================== */
 .mc-list { display: flex; flex-direction: column; gap: 4px; }
 
 .mc-card {
-  display: flex;
-  align-items: stretch;
+  display: grid;
+  grid-template-columns: 90px 100px 150px 180px 1fr;
+  align-items: center;
+  gap: 0;
   border-radius: 6px;
   overflow: hidden;
-  position: relative;
-  min-height: 72px;
+  border: none;
   transition: filter 0.15s;
+  min-height: 68px;
 }
 
-.mc-card:hover { filter: brightness(1.07); }
+.mc-card:hover { filter: brightness(1.08); }
 
-/* Borde izquierdo coloreado por resultado */
-.mc-card::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 0; bottom: 0;
-  width: 3px;
-  z-index: 1;
-}
+.mc-card.mc-win  { background: rgba(20, 55, 32, 0.6); backdrop-filter: blur(6px); }
+.mc-card.mc-loss { background: rgba(55, 18, 18, 0.6); backdrop-filter: blur(6px); }
 
-.mc-card.mc-win  { background: rgba(20,55,32,0.55); backdrop-filter: blur(6px); }
-.mc-card.mc-loss { background: rgba(55,18,18,0.55); backdrop-filter: blur(6px); }
-
-.mc-card.mc-win::before  { background: #4ade80; }
-.mc-card.mc-loss::before { background: #f87171; }
-
-/* COL 1: META — cola, resultado, duración, LP, tiempo */
+/* COL 1: META */
 .mc-meta {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   justify-content: center;
   gap: 2px;
-  padding: 10px 12px 10px 16px;
-  min-width: 96px;
-  flex-shrink: 0;
+  padding: 10px 10px 10px 14px;
+  height: 100%;
   border-right: 1px solid rgba(255,255,255,0.06);
 }
 
-.mc-card.mc-win  .mc-meta { background: rgba(10,32,18,0.7); }
-.mc-card.mc-loss .mc-meta { background: rgba(38,10,10,0.7); }
+.mc-card.mc-win  .mc-meta { background: rgba(10, 32, 18, 0.75); }
+.mc-card.mc-loss .mc-meta { background: rgba(38, 10, 10, 0.75); }
 
 .mc-queue {
-  font-size: 0.58rem;
-  color: rgba(255,255,255,0.3);
+  font-size: 0.6rem;
+  color: rgba(255,255,255,0.35);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   font-family: 'DM Sans', sans-serif;
@@ -906,52 +897,39 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
 
 .mc-result {
   font-family: 'Outfit', sans-serif;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 700;
 }
-
 .mc-v { color: #4ade80; }
 .mc-d { color: #f87171; }
 
-.mc-dur { font-size: 0.65rem; color: rgba(255,255,255,0.4); font-family: 'DM Sans', sans-serif; }
+.mc-dur  { font-size: 0.65rem; color: rgba(255,255,255,0.4); font-family: 'DM Sans', sans-serif; }
+.mc-lp   { font-size: 0.7rem; font-weight: 700; font-family: 'Outfit', sans-serif; }
+.mc-ago  { font-size: 0.6rem; color: rgba(255,255,255,0.25); font-family: 'DM Sans', sans-serif; }
 
-.mc-lp {
-  font-family: 'Outfit', sans-serif;
-  font-size: 0.72rem;
-  font-weight: 700;
-  margin-top: 1px;
-}
-
-.mc-lp.lp-pos { color: #4ade80; }
-.mc-lp.lp-neg { color: #f87171; }
-.mc-lp.lp-neu { color: var(--text-muted); }
-
-.mc-ago { font-size: 0.6rem; color: rgba(255,255,255,0.25); font-family: 'DM Sans', sans-serif; }
-
-/* COL 2: CAMPEÓN + HECHIZOS */
+/* COL 2: CAMPEÓN + HECHIZOS — todo en una fila horizontal */
 .mc-champ-col {
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 6px;
   padding: 8px 10px;
-  flex-shrink: 0;
+  height: 100%;
 }
 
 .mc-champ-wrap { position: relative; flex-shrink: 0; }
 
 .mc-champ-img {
-  width: 46px;
-  height: 46px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid rgba(255,255,255,0.12);
   display: block;
-  background: var(--bg3);
 }
 
-.mc-card.mc-win  .mc-champ-img { border-color: rgba(74,222,128,0.45); }
-.mc-card.mc-loss .mc-champ-img { border-color: rgba(248,113,113,0.45); }
+.mc-card.mc-win  .mc-champ-img { border-color: rgba(74,222,128,0.4); }
+.mc-card.mc-loss .mc-champ-img { border-color: rgba(248,113,113,0.4); }
 
 .mc-champ-lv {
   position: absolute;
@@ -979,29 +957,28 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
   padding: 2px;
 }
 
+/* Hechizos apilados verticalmente junto al campeón */
 .mc-spells {
   display: flex;
   flex-direction: column;
   gap: 2px;
   flex-shrink: 0;
 }
-
 .mc-spell {
-  width: 20px;
-  height: 20px;
-  border-radius: 4px;
+  width: 18px;
+  height: 18px;
+  border-radius: 3px;
   object-fit: cover;
   background: rgba(0,0,0,0.3);
 }
-
 .mc-spell-ph {
-  width: 20px;
-  height: 20px;
-  border-radius: 4px;
+  width: 18px;
+  height: 18px;
+  border-radius: 3px;
   background: rgba(255,255,255,0.05);
 }
 
-/* COL 3: KDA + CS */
+/* COL 3: KDA + CS en una columna compacta */
 .mc-kda-col {
   display: flex;
   flex-direction: column;
@@ -1009,37 +986,36 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
   justify-content: center;
   gap: 2px;
   padding: 8px 12px;
-  min-width: 120px;
-  flex-shrink: 0;
+  height: 100%;
 }
 
 .mc-kda-nums {
   font-family: 'Outfit', sans-serif;
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 700;
   line-height: 1;
   color: #fff;
 }
 
 .mc-kda-nums .mc-k  { color: #fff; }
-.mc-kda-nums .mc-sep { color: rgba(255,255,255,0.2); font-size: 0.85em; }
+.mc-kda-nums .mc-sep { color: rgba(255,255,255,0.25); }
 .mc-kda-nums .mc-d  { color: #f87171; }
 .mc-kda-nums .mc-a  { color: #fff; }
 
 .mc-kda-ratio {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 600;
   font-family: 'DM Sans', sans-serif;
-  color: rgba(255,255,255,0.5);
+  color: rgba(255,255,255,0.55);
 }
 
 .mc-cs {
   font-size: 0.65rem;
-  color: rgba(255,255,255,0.35);
+  color: rgba(255,255,255,0.4);
   font-family: 'DM Sans', sans-serif;
 }
 
-/* COL 4: ÍTEMS */
+/* COL 4: ÍTEMS — fila única compacta */
 .mc-items {
   display: flex;
   flex-wrap: wrap;
@@ -1047,36 +1023,34 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
   padding: 8px 10px;
   align-items: center;
   align-content: center;
+  height: 100%;
   max-width: 180px;
-  flex-shrink: 0;
 }
 
 .mi-icon {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   border-radius: 4px;
   object-fit: cover;
   background: rgba(0,0,0,0.3);
 }
 
 .mi-empty {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   border-radius: 4px;
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.07);
 }
 
-/* COL 5: EQUIPOS 5v5 — ocupa el espacio restante */
+/* COL 5: EQUIPOS 5v5 compactos */
 .mc-teams {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0 8px;
-  padding: 8px 12px;
-  flex: 1;
-  min-width: 0;
+  gap: 0 6px;
+  padding: 8px 10px;
+  height: 100%;
   align-content: center;
-  border-left: 1px solid rgba(255,255,255,0.05);
 }
 
 .mc-team { display: flex; flex-direction: column; gap: 2px; }
@@ -1156,6 +1130,7 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
 }
 
 @media (max-width: 900px) {
+  .mc-card { grid-template-columns: 100px 90px 140px 1fr; }
   .mc-teams { display: none; }
 }
 
@@ -1244,28 +1219,36 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
   /* Título sección partidas */
   .pf-matches-title { font-size: 0.7rem; letter-spacing: 1.5px; }
 
-  /* MATCH CARDS — móvil: solo meta + campeón + KDA */
+  /* MATCH CARDS — layout horizontal compacto */
   .mc-list { gap: 6px; }
 
-  .mc-card { min-height: 72px; }
+  .mc-card {
+    grid-template-columns: 90px 80px 1fr;
+    grid-template-rows: 1fr;
+    min-height: 76px;
+  }
 
-  .mc-meta { padding: 8px 8px 8px 14px; min-width: 88px; gap: 2px; }
-  .mc-queue  { font-size: 0.56rem; }
-  .mc-result { font-size: 0.88rem; }
+  /* Col meta compacta */
+  .mc-meta { padding: 8px 6px; gap: 2px; }
+  .mc-queue  { font-size: 0.58rem; }
+  .mc-result { font-size: 0.85rem; }
   .mc-dur    { font-size: 0.6rem; }
-  .mc-ago    { font-size: 0.56rem; }
-  .mc-lp     { font-size: 0.68rem; }
+  .mc-ago    { font-size: 0.58rem; }
+  .mc-lp     { font-size: 0.7rem; }
 
+  /* Col campeón compacta */
   .mc-champ-col { padding: 8px 6px; gap: 4px; }
-  .mc-champ-img { width: 42px; height: 42px; }
-  .mc-spell     { width: 17px; height: 17px; }
+  .mc-champ-img { width: 44px; height: 44px; }
+  .mc-spell     { width: 16px; height: 16px; }
   .mc-champ-lv  { font-size: 0.5rem; padding: 1px 3px; }
   .mc-role-icon { width: 15px; height: 15px; }
+  .mc-role-icon svg { width: 11px; height: 11px; }
 
-  .mc-kda-col { padding: 8px 10px; min-width: unset; }
-  .mc-kda-nums { font-size: 0.95rem; }
-  .mc-kda-ratio { font-size: 0.66rem; }
-  .mc-cs        { font-size: 0.6rem; }
+  /* Col KDA ocupa el resto */
+  .mc-kda-col { padding: 8px 10px; gap: 2px; }
+  .mc-kda-nums { font-size: 1rem; }
+  .mc-kda-ratio { font-size: 0.68rem; }
+  .mc-cs        { font-size: 0.62rem; }
 
   /* Ocultar ítems y equipos en móvil */
   .mc-items  { display: none; }
