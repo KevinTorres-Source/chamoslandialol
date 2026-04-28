@@ -16,6 +16,20 @@ const SPELL_MAP = {
   32: "SummonerSnowball",
 };
 
+// Mapa de championId → championName (subset común, fallback al ID)
+async function getChampionMap() {
+  try {
+    const res  = await axios.get("https://ddragon.leagueoflegends.com/api/versions.json");
+    const ver  = res.data[0];
+    const res2 = await axios.get(`https://ddragon.leagueoflegends.com/cdn/${ver}/data/es_ES/champion.json`);
+    const map  = {};
+    for (const champ of Object.values(res2.data.data)) {
+      map[parseInt(champ.key)] = champ.id; // id = nombre usado en iconos
+    }
+    return map;
+  } catch { return {}; }
+}
+
 async function getRankedStats(puuid) {
   try {
     const res     = await axios.get(
@@ -52,20 +66,31 @@ module.exports = async (req, res) => {
     const game          = response.data;
     const gameStartTime = game.gameStartTime || 0;
     const durationSecs  = Math.floor((Date.now() - gameStartTime) / 1000);
-    const isRanked      = [420, 440].includes(game.gameQueueConfigId);
     const queueId       = game.gameQueueConfigId;
 
+    // Cargar mapa de campeones para resolver championId → nombre
+    const champMap = await getChampionMap();
+
+    // Siempre buscar ranked stats (incluso en ARAM mostramos el elo de Solo Q)
     const enriched = [];
     for (const p of (game.participants || [])) {
       await wait(250);
-      const ranked    = isRanked ? await getRankedStats(p.puuid) : { soloQ: null, flexQ: null };
+      const ranked = await getRankedStats(p.puuid);
+
+      // Para Flex Q mostrar flex primero, para todo lo demás mostrar Solo Q primero
       const mainQueue = queueId === 440 ? ranked.flexQ : ranked.soloQ;
       const altQueue  = queueId === 440 ? ranked.soloQ : ranked.flexQ;
-      const displayed = (mainQueue?.tier && mainQueue.tier !== "UNRANKED") ? mainQueue : altQueue;
+      const displayed = (mainQueue?.tier && mainQueue.tier !== "UNRANKED") ? mainQueue
+                      : (altQueue?.tier && altQueue.tier !== "UNRANKED")   ? altQueue
+                      : null;
+
+      // Resolver nombre del campeón desde el mapa o desde la API
+      const champName = p.championName || champMap[p.championId] || null;
+
       enriched.push({
         puuid:        p.puuid,
         summonerName: p.riotId || p.summonerName || "?",
-        championName: p.championName || null,
+        championName: champName,
         championId:   p.championId,
         teamId:       p.teamId,
         spell1:       SPELL_MAP[p.spell1Id] || null,
@@ -75,9 +100,9 @@ module.exports = async (req, res) => {
     }
 
     res.status(200).json({
-      gameId: game.gameId,
-      gameMode: QUEUE_MAP[queueId] || game.gameMode || "Partida",
-      queueId, isRanked, durationSecs, gameStartTime,
+      gameId:          game.gameId,
+      gameMode:        QUEUE_MAP[queueId] || game.gameMode || "Partida",
+      queueId, durationSecs, gameStartTime,
       participants:    enriched,
       bannedChampions: game.bannedChampions || [],
     });
