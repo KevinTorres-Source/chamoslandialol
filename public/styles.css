@@ -1148,15 +1148,16 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
 @media (max-width: 600px) {
 
   /* CONTAINER */
-  .container { padding: 16px 12px 40px; }
+  .container { padding: 50px 12px 40px; }
 
   /* HEADER — título en una línea, más pequeño */
   h1 {
-    font-size: 1.6rem;
+    font-size: 1.45rem;
     letter-spacing: 4px;
     white-space: nowrap;
   }
   .last-update { font-size: 0.65rem; }
+  header { margin-bottom: 36px; gap: 20px; }
   .btn-update { font-size: 0.8rem; padding: 9px 18px; letter-spacing: 2px; }
 
   /* TABLA — solo mostrar #, jugador, elo */
