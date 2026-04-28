@@ -56,7 +56,7 @@ function winrate(wins, losses) {
 
 function formatWR(wr) {
   if (wr === null) return '<span class="unranked-text">—</span>';
-  const color = wr >= 55 ? "#4ade80" : wr >= 50 ? "#facc15" : "#f87171";
+  const color = wr > 50 ? "#4ade80" : wr === 50 ? "#9aa4b2" : "#f87171";
   return `<span style="color:${color};font-weight:600">${wr}%</span>`;
 }
 
@@ -709,7 +709,7 @@ function renderProfileData(player) {
   const iconUrl    = getProfileIconUrl(player.profileIconId);
   const opggUrl    = getOpggUrl(player.name, player.tag);
 
-  const wrColor = (wr) => wr === null ? "#9aa4b2" : wr >= 55 ? "#4ade80" : wr >= 50 ? "#facc15" : "#f87171";
+  const wrColor = (wr) => wr === null ? "#9aa4b2" : wr > 50 ? "#4ade80" : wr === 50 ? "#9aa4b2" : "#f87171";
   const tierColor = (t) => TIER_COLORS[t] || "#9aa4b2";
 
   // Barra de progreso LP dentro del tier actual
