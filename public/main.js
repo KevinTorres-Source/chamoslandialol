@@ -871,13 +871,19 @@ function renderLiveGame(game, currentPlayer, container) {
     const name    = (p.summonerName || "?").replace(/#.*$/, "").slice(0, 16);
     const ranked  = p.ranked?.displayed;
     const soloQ   = p.ranked?.soloQ;
+    console.log(`[LIVE] ${p.summonerName} ranked:`, p.ranked);
+
+    // Determinar el tier a mostrar — usar displayed o soloQ como fallback
+    const tierToShow = (ranked?.tier && ranked.tier !== "UNRANKED") ? ranked
+                     : (soloQ?.tier && soloQ.tier !== "UNRANKED") ? soloQ
+                     : null;
 
     // Ícono de tier a la DERECHA del nombre
-    const nameTierIcon = ranked && ranked.tier && ranked.tier !== "UNRANKED"
+    const nameTierIcon = tierToShow
       ? `<img class="lg-name-tier-icon"
-           src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-mini-crests/${ranked.tier.toLowerCase()}.png"
+           src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-mini-crests/${tierToShow.tier.toLowerCase()}.png"
            onerror="this.style.display='none'"
-           title="${ranked.tier}">`
+           title="${tierToShow.tier}">`
       : `<span class="lg-name-tier-na">N/A</span>`;
 
     return `
