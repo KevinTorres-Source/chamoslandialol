@@ -859,14 +859,10 @@ function renderLiveGame(game, currentPlayer, container) {
   const fmtRanked = (r) => {
     if (!r || r.tier === "UNRANKED" || !r.tier) return `<span class="lg-unranked">Sin ranked</span>`;
     const color = TIER_COLORS[r.tier] || "#fff";
-    const wr    = r.wr !== null ? `<span class="lg-wr" style="color:${r.wr>=55?'#4ade80':r.wr>=50?'#facc15':'#f87171'}">${r.wr}%</span>` : "";
+    const wrColor = r.wr === null ? "" : r.wr > 50 ? "#4ade80" : r.wr === 50 ? "#9aa4b2" : "#f87171";
+    const wr = r.wr !== null ? `<span class="lg-wr" style="color:${wrColor}">${r.wr}%</span>` : "";
     return `<span class="lg-tier" style="color:${color}">${r.tier} ${r.rank}</span>
             <span class="lg-lp">${r.lp} LP</span>${wr}`;
-  };
-
-  const getTierIcon = (tier) => {
-    if (!tier || tier === "UNRANKED") return "";
-    return `<img class="lg-tier-icon" src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-mini-crests/${tier.toLowerCase()}.png" onerror="this.style.display='none'">`;
   };
 
   const playerRow = (p) => {
@@ -875,9 +871,8 @@ function renderLiveGame(game, currentPlayer, container) {
     const name    = (p.summonerName || "?").replace(/#.*$/, "").slice(0, 16);
     const ranked  = p.ranked?.displayed;
     const soloQ   = p.ranked?.soloQ;
-    const tierIcon = getTierIcon(ranked?.tier);
 
-    // Ícono de tier junto al nombre — grande y visible
+    // Ícono de tier a la DERECHA del nombre
     const nameTierIcon = ranked && ranked.tier && ranked.tier !== "UNRANKED"
       ? `<img class="lg-name-tier-icon"
            src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-mini-crests/${ranked.tier.toLowerCase()}.png"
@@ -892,8 +887,8 @@ function renderLiveGame(game, currentPlayer, container) {
         </div>
         <div class="lg-row-name">
           <div class="lg-name-row">
-            ${nameTierIcon}
             <span class="lg-summ-name">${name}</span>
+            ${nameTierIcon}
           </div>
           ${soloQ && soloQ.tier !== "UNRANKED" ? `<span class="lg-games">${(soloQ.wins||0)+(soloQ.losses||0)} partidas</span>` : ""}
         </div>
