@@ -1148,17 +1148,26 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
 @media (max-width: 600px) {
 
   /* CONTAINER */
-  .container { padding: 50px 12px 40px; }
+  .container { padding: 28px 12px 40px; }
 
-  /* HEADER — título en una línea, más pequeño */
+  /* HEADER */
   h1 {
     font-size: 1.45rem;
     letter-spacing: 4px;
     white-space: nowrap;
   }
-  .last-update { font-size: 0.65rem; }
-  header { margin-bottom: 36px; gap: 20px; }
-  .btn-update { font-size: 0.8rem; padding: 9px 18px; letter-spacing: 2px; }
+  .last-update { font-size: 0.62rem; }
+  header { margin-bottom: 20px; gap: 12px; }
+  .header-actions { gap: 5px; }
+
+  /* Botón más pequeño en móvil */
+  .btn-update {
+    font-size: 0.7rem;
+    padding: 7px 14px;
+    letter-spacing: 1.5px;
+    gap: 5px;
+  }
+  .btn-icon { font-size: 0.9rem; }
 
   /* TABLA — solo mostrar #, jugador, elo */
   .table-wrapper { overflow-x: hidden; }
