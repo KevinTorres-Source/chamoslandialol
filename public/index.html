@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <!-- Spiegel = fuente body de LoL client (Noto Sans como alternativa más cercana disponible) -->
   <!-- Beaufort for LOL = fuente de títulos (Cinzel Decorative la aproxima bien) -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@700;800;900&family=Outfit:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Outfit:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
   <link rel="stylesheet" href="/styles.css" />
@@ -25,11 +25,13 @@
     <header>
       <div class="header-center">
         <h1>CHAMOSLAND <span>LOL</span></h1>
+      </div>
+      <div class="header-actions">
+        <button class="btn-update" id="btnUpdate" onclick="actualizarElo()">
+          <span class="btn-icon">↻</span> Actualizar ELO
+        </button>
         <span class="last-update" id="lastUpdate">—</span>
       </div>
-      <button class="btn-update" id="btnUpdate" onclick="actualizarElo()">
-        <span class="btn-icon">↻</span> Actualizar ELO
-      </button>
     </header>
 
     <!-- LAYOUT: tabla + gráfico -->
