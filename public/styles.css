@@ -1468,3 +1468,34 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
   .lg-row { grid-template-columns: 30px 1fr auto; gap: 6px; }
   .lg-champ-img, .lg-champ-ph { width: 30px; height: 30px; }
 }
+
+/* Ícono de tier junto al nombre en partida en vivo */
+.lg-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lg-name-tier-icon {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 4px rgba(255,255,255,0.15));
+}
+
+.lg-name-tier-na {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: rgba(255,255,255,0.25);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 4px;
+  flex-shrink: 0;
+}
