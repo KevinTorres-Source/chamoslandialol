@@ -851,209 +851,214 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
 /* =============================== */
 /* MATCH CARDS — ESTILO REFERENCIA */
 /* =============================== */
-.mc-list { display: flex; flex-direction: column; gap: 8px; }
+/* MATCH CARDS — COMPACTO          */
+/* =============================== */
+.mc-list { display: flex; flex-direction: column; gap: 4px; }
 
 .mc-card {
   display: grid;
-  grid-template-columns: 110px 110px 160px 1fr 220px;
-  align-items: stretch;
+  grid-template-columns: 90px 100px 150px 180px 1fr;
+  align-items: center;
   gap: 0;
-  border-radius: 8px;
+  border-radius: 6px;
   overflow: hidden;
   border: none;
   transition: filter 0.15s;
-  min-height: 90px;
+  min-height: 68px;
 }
 
-.mc-card:hover { filter: brightness(1.06); }
+.mc-card:hover { filter: brightness(1.08); }
 
-/* Fondo completo por resultado — semitransparente para ver el fondo */
-.mc-card.mc-win  { background: rgba(20, 60, 35, 0.55); backdrop-filter: blur(6px); }
-.mc-card.mc-loss { background: rgba(60, 20, 20, 0.55); backdrop-filter: blur(6px); }
+.mc-card.mc-win  { background: rgba(20, 55, 32, 0.6); backdrop-filter: blur(6px); }
+.mc-card.mc-loss { background: rgba(55, 18, 18, 0.6); backdrop-filter: blur(6px); }
 
-/* COL 1: META — color sólido más oscuro */
+/* COL 1: META */
 .mc-meta {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  gap: 4px;
-  padding: 12px 10px;
+  gap: 2px;
+  padding: 10px 10px 10px 14px;
   height: 100%;
+  border-right: 1px solid rgba(255,255,255,0.06);
 }
 
-.mc-card.mc-win  .mc-meta { background: rgba(10, 35, 20, 0.7); }
-.mc-card.mc-loss .mc-meta { background: rgba(40, 10, 10, 0.7); }
+.mc-card.mc-win  .mc-meta { background: rgba(10, 32, 18, 0.75); }
+.mc-card.mc-loss .mc-meta { background: rgba(38, 10, 10, 0.75); }
 
 .mc-queue {
-  font-size: 0.68rem;
-  color: rgba(255,255,255,0.45);
+  font-size: 0.6rem;
+  color: rgba(255,255,255,0.35);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   font-family: 'DM Sans', sans-serif;
-  font-weight: 500;
 }
 
 .mc-result {
   font-family: 'Outfit', sans-serif;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 700;
-  letter-spacing: 0.5px;
 }
 .mc-v { color: #4ade80; }
 .mc-d { color: #f87171; }
 
-.mc-dur  { font-size: 0.72rem; color: rgba(255,255,255,0.45); font-family: 'DM Sans', sans-serif; }
-.mc-lp   { font-size: 0.8rem; font-weight: 700; font-family: 'Outfit', sans-serif; }
-.mc-ago  { font-size: 0.65rem; color: rgba(255,255,255,0.3); font-family: 'DM Sans', sans-serif; }
+.mc-dur  { font-size: 0.65rem; color: rgba(255,255,255,0.4); font-family: 'DM Sans', sans-serif; }
+.mc-lp   { font-size: 0.7rem; font-weight: 700; font-family: 'Outfit', sans-serif; }
+.mc-ago  { font-size: 0.6rem; color: rgba(255,255,255,0.25); font-family: 'DM Sans', sans-serif; }
 
-/* COL 2: CAMPEÓN */
+/* COL 2: CAMPEÓN + HECHIZOS — todo en una fila horizontal */
 .mc-champ-col {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   gap: 6px;
-  padding: 12px 8px;
+  padding: 8px 10px;
   height: 100%;
-  justify-content: center;
 }
 
-.mc-champ-wrap { position: relative; }
+.mc-champ-wrap { position: relative; flex-shrink: 0; }
 
 .mc-champ-img {
-  width: 56px;
-  height: 56px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid rgba(255,255,255,0.15);
+  border: 2px solid rgba(255,255,255,0.12);
   display: block;
 }
 
-.mc-card.mc-win  .mc-champ-img { border-color: rgba(74,222,128,0.5); }
-.mc-card.mc-loss .mc-champ-img { border-color: rgba(248,113,113,0.5); }
+.mc-card.mc-win  .mc-champ-img { border-color: rgba(74,222,128,0.4); }
+.mc-card.mc-loss .mc-champ-img { border-color: rgba(248,113,113,0.4); }
 
 .mc-champ-lv {
   position: absolute;
-  bottom: -4px;
-  right: -4px;
-  background: #0d1320;
-  border: 1px solid rgba(255,255,255,0.15);
+  bottom: -3px;
+  right: -3px;
+  background: rgba(8,12,20,0.95);
+  border: 1px solid rgba(255,255,255,0.12);
   color: #e2e8f0;
-  font-size: 0.6rem;
+  font-size: 0.55rem;
   font-family: 'Outfit', sans-serif;
   font-weight: 700;
-  padding: 1px 5px;
+  padding: 1px 4px;
   border-radius: 3px;
 }
 
-/* Ícono de línea (role) */
 .mc-role-icon {
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   object-fit: contain;
   position: absolute;
-  top: -5px;
-  left: -5px;
+  top: -3px;
+  left: -3px;
   border-radius: 50%;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0,0,0,0.65);
   padding: 2px;
 }
 
-.mc-spells { display: flex; gap: 3px; }
+/* Hechizos apilados verticalmente junto al campeón */
+.mc-spells {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex-shrink: 0;
+}
 .mc-spell {
-  width: 20px;
-  height: 20px;
-  border-radius: 4px;
+  width: 18px;
+  height: 18px;
+  border-radius: 3px;
   object-fit: cover;
   background: rgba(0,0,0,0.3);
 }
 .mc-spell-ph {
-  width: 20px;
-  height: 20px;
-  border-radius: 4px;
+  width: 18px;
+  height: 18px;
+  border-radius: 3px;
   background: rgba(255,255,255,0.05);
 }
 
-/* COL 3: KDA */
+/* COL 3: KDA + CS en una columna compacta */
 .mc-kda-col {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  gap: 4px;
-  padding: 12px 14px;
+  gap: 2px;
+  padding: 8px 12px;
   height: 100%;
 }
 
 .mc-kda-nums {
   font-family: 'Outfit', sans-serif;
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: 700;
   line-height: 1;
   color: #fff;
 }
 
 .mc-kda-nums .mc-k  { color: #fff; }
-.mc-kda-nums .mc-sep { color: rgba(255,255,255,0.3); font-size: 1rem; }
+.mc-kda-nums .mc-sep { color: rgba(255,255,255,0.25); }
 .mc-kda-nums .mc-d  { color: #f87171; }
 .mc-kda-nums .mc-a  { color: #fff; }
 
 .mc-kda-ratio {
-  font-size: 0.75rem;
+  font-size: 0.68rem;
   font-weight: 600;
   font-family: 'DM Sans', sans-serif;
-  color: rgba(255,255,255,0.6);
+  color: rgba(255,255,255,0.55);
 }
 
 .mc-cs {
-  font-size: 0.72rem;
-  color: rgba(255,255,255,0.45);
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.4);
   font-family: 'DM Sans', sans-serif;
 }
 
-/* COL 4: ÍTEMS */
+/* COL 4: ÍTEMS — fila única compacta */
 .mc-items {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
-  padding: 12px 16px;
+  gap: 3px;
+  padding: 8px 10px;
   align-items: center;
-  justify-content: center;
+  align-content: center;
   height: 100%;
+  max-width: 180px;
 }
 
 .mi-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 5px;
+  width: 26px;
+  height: 26px;
+  border-radius: 4px;
   object-fit: cover;
   background: rgba(0,0,0,0.3);
 }
 
 .mi-empty {
-  width: 32px;
-  height: 32px;
-  border-radius: 5px;
+  width: 26px;
+  height: 26px;
+  border-radius: 4px;
   background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.07);
 }
 
-/* COL 5: EQUIPOS 5v5 */
+/* COL 5: EQUIPOS 5v5 compactos */
 .mc-teams {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0 8px;
-  padding: 10px 12px;
+  gap: 0 6px;
+  padding: 8px 10px;
   height: 100%;
   align-content: center;
 }
 
-.mc-team { display: flex; flex-direction: column; gap: 3px; }
+.mc-team { display: flex; flex-direction: column; gap: 2px; }
 
 .mp-player {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
 }
 
 .mp-player.mp-self .mp-name {
@@ -1062,21 +1067,21 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
 }
 
 .mp-icon {
-  width: 16px;
-  height: 16px;
-  border-radius: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
   object-fit: cover;
   flex-shrink: 0;
   background: rgba(0,0,0,0.3);
 }
 
 .mp-name {
-  font-size: 0.68rem;
-  color: rgba(255,255,255,0.6);
+  font-size: 0.62rem;
+  color: rgba(255,255,255,0.55);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 78px;
+  max-width: 72px;
   font-family: 'DM Sans', sans-serif;
 }
 
