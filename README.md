@@ -1,14 +1,3 @@
-## 🔑 Renovar la API Key de Riot
-
-La API Key de Riot Games personal expira cada **24 horas**. Para actualizarla:
-
-1. Ir a https://developer.riotgames.com y generar una nueva key
-2. En Vercel → Settings → Environment Variables → editar `RIOT_API_KEY`
-3. **Redeploy** el proyecto (Vercel → Deployments → ··· → Redeploy)
-
-> Si quieres que el sitio funcione permanentemente sin renovar la key, tenés que solicitar una **Production API Key** a Riot Games desde el portal de desarrolladores.
-
----
 
 ## 📁 Estructura del proyecto
 
