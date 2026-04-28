@@ -877,17 +877,27 @@ function renderLiveGame(game, currentPlayer, container) {
     const soloQ   = p.ranked?.soloQ;
     const tierIcon = getTierIcon(ranked?.tier);
 
+    // Ícono de tier junto al nombre — grande y visible
+    const nameTierIcon = ranked && ranked.tier && ranked.tier !== "UNRANKED"
+      ? `<img class="lg-name-tier-icon"
+           src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-mini-crests/${ranked.tier.toLowerCase()}.png"
+           onerror="this.style.display='none'"
+           title="${ranked.tier}">`
+      : `<span class="lg-name-tier-na">N/A</span>`;
+
     return `
       <div class="lg-row${isSelf ? " lg-self" : ""}">
         <div class="lg-row-champ">
           ${champ ? `<img class="lg-champ-img" src="${champ}" onerror="this.style.opacity='0.3'">` : `<div class="lg-champ-ph"></div>`}
         </div>
         <div class="lg-row-name">
-          <span class="lg-summ-name">${name}</span>
+          <div class="lg-name-row">
+            ${nameTierIcon}
+            <span class="lg-summ-name">${name}</span>
+          </div>
           ${soloQ && soloQ.tier !== "UNRANKED" ? `<span class="lg-games">${(soloQ.wins||0)+(soloQ.losses||0)} partidas</span>` : ""}
         </div>
         <div class="lg-row-ranked">
-          ${tierIcon}
           <div class="lg-row-ranked-text">${fmtRanked(ranked)}</div>
         </div>
       </div>`;
