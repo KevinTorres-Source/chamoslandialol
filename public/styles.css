@@ -384,21 +384,22 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
 /* =============================== */
 .elo-cell { display: flex; align-items: center; gap: 6px; }
 
-.tier-icon { width: 22px; height: 22px; object-fit: contain; flex-shrink: 0; }
+.tier-icon { width: 18px; height: 18px; object-fit: contain; flex-shrink: 0; }
 
 .tier-badge {
   display: inline-block;
-  padding: 2px 9px;
-  border-radius: 4px;
+  padding: 1px 7px;
+  border-radius: 3px;
   border: 1px solid;
   font-family: 'Outfit', sans-serif;
-  font-size: 0.88rem;
+  font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
-.lp-val { font-family: 'Outfit', sans-serif; font-size: 0.92rem; font-weight: 600; }
+.lp-val { font-family: 'Outfit', sans-serif; font-size: 0.78rem; font-weight: 600; }
 
 .wins   { color: #4ade80; font-weight: 500; }
 .losses { color: #f87171; font-weight: 500; }
