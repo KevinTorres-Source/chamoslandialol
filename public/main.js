@@ -871,18 +871,30 @@ function renderLiveGame(game, currentPlayer, container) {
     const name    = (p.summonerName || "?").replace(/#.*$/, "").slice(0, 16);
     const ranked  = p.ranked?.displayed;
     const soloQ   = p.ranked?.soloQ;
-    console.log(`[LIVE] ${p.summonerName} ranked:`, p.ranked);
 
     // Determinar el tier a mostrar — usar displayed o soloQ como fallback
     const tierToShow = (ranked?.tier && ranked.tier !== "UNRANKED") ? ranked
                      : (soloQ?.tier && soloQ.tier !== "UNRANKED") ? soloQ
                      : null;
 
+    const TIER_ICON_MAP = {
+      IRON:        "https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-mini-crests/iron.png",
+      BRONZE:      "https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-mini-crests/bronze.png",
+      SILVER:      "https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-mini-crests/silver.png",
+      GOLD:        "https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-mini-crests/gold.png",
+      PLATINUM:    "https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-mini-crests/platinum.png",
+      EMERALD:     "https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-mini-crests/emerald.png",
+      DIAMOND:     "https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-mini-crests/diamond.png",
+      MASTER:      "https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-mini-crests/master.png",
+      GRANDMASTER: "https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-mini-crests/grandmaster.png",
+      CHALLENGER:  "https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-mini-crests/challenger.png",
+    };
+
     // Ícono de tier a la DERECHA del nombre
-    const nameTierIcon = tierToShow
+    const nameTierIcon = tierToShow && TIER_ICON_MAP[tierToShow.tier]
       ? `<img class="lg-name-tier-icon"
-           src="https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-mini-crests/${tierToShow.tier.toLowerCase()}.png"
-           onerror="this.style.display='none'"
+           src="${TIER_ICON_MAP[tierToShow.tier]}"
+           onerror="this.parentNode.innerHTML='<span class=\\'lg-name-tier-na\\'>${tierToShow.tier.slice(0,2)}</span>'"
            title="${tierToShow.tier}">`
       : `<span class="lg-name-tier-na">N/A</span>`;
 
