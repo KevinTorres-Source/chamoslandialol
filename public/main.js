@@ -877,21 +877,20 @@ function renderLiveGame(game, currentPlayer, container) {
                      : (soloQ?.tier && soloQ.tier !== "UNRANKED") ? soloQ
                      : null;
 
-    // URLs que SÍ funcionan — usando Riot's emblem assets
+    // URLs verificadas — jsDelivr CDN con assets oficiales de Riot
     const TIER_ICON_MAP = {
-      IRON:        `https://ddragon.leagueoflegends.com/cdn/${ddVersion}/img/ranked-emblem/emblem-iron.png`,
-      BRONZE:      `https://ddragon.leagueoflegends.com/cdn/${ddVersion}/img/ranked-emblem/emblem-bronze.png`,
-      SILVER:      `https://ddragon.leagueoflegends.com/cdn/${ddVersion}/img/ranked-emblem/emblem-silver.png`,
-      GOLD:        `https://ddragon.leagueoflegends.com/cdn/${ddVersion}/img/ranked-emblem/emblem-gold.png`,
-      PLATINUM:    `https://ddragon.leagueoflegends.com/cdn/${ddVersion}/img/ranked-emblem/emblem-platinum.png`,
-      EMERALD:     `https://ddragon.leagueoflegends.com/cdn/${ddVersion}/img/ranked-emblem/emblem-emerald.png`,
-      DIAMOND:     `https://ddragon.leagueoflegends.com/cdn/${ddVersion}/img/ranked-emblem/emblem-diamond.png`,
-      MASTER:      `https://ddragon.leagueoflegends.com/cdn/${ddVersion}/img/ranked-emblem/emblem-master.png`,
-      GRANDMASTER: `https://ddragon.leagueoflegends.com/cdn/${ddVersion}/img/ranked-emblem/emblem-grandmaster.png`,
-      CHALLENGER:  `https://ddragon.leagueoflegends.com/cdn/${ddVersion}/img/ranked-emblem/emblem-challenger.png`,
+      IRON:        "https://cdn.jsdelivr.net/gh/magisteriis/lol-icons-and-emblems/tier-icons/base-icons/iron.png",
+      BRONZE:      "https://cdn.jsdelivr.net/gh/magisteriis/lol-icons-and-emblems/tier-icons/base-icons/bronze.png",
+      SILVER:      "https://cdn.jsdelivr.net/gh/magisteriis/lol-icons-and-emblems/tier-icons/base-icons/silver.png",
+      GOLD:        "https://cdn.jsdelivr.net/gh/magisteriis/lol-icons-and-emblems/tier-icons/base-icons/gold.png",
+      PLATINUM:    "https://cdn.jsdelivr.net/gh/magisteriis/lol-icons-and-emblems/tier-icons/base-icons/platinum.png",
+      EMERALD:     "https://cdn.jsdelivr.net/gh/magisteriis/lol-icons-and-emblems/tier-icons/base-icons/emerald.png",
+      DIAMOND:     "https://cdn.jsdelivr.net/gh/magisteriis/lol-icons-and-emblems/tier-icons/base-icons/diamond.png",
+      MASTER:      "https://cdn.jsdelivr.net/gh/magisteriis/lol-icons-and-emblems/tier-icons/base-icons/master.png",
+      GRANDMASTER: "https://cdn.jsdelivr.net/gh/magisteriis/lol-icons-and-emblems/tier-icons/base-icons/grandmaster.png",
+      CHALLENGER:  "https://cdn.jsdelivr.net/gh/magisteriis/lol-icons-and-emblems/tier-icons/base-icons/challenger.png",
     };
 
-    // Ícono a la derecha del nombre, N/A si sin ranked
     const nameTierIcon = tierToShow && TIER_ICON_MAP[tierToShow.tier]
       ? `<img class="lg-name-tier-icon" src="${TIER_ICON_MAP[tierToShow.tier]}" title="${tierToShow.tier}" onerror="this.style.display='none'">`
       : `<span class="lg-name-tier-na">N/A</span>`;
