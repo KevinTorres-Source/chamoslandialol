@@ -1536,11 +1536,11 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
 }
 
 .lg-name-tier-icon {
-  width: 26px;
-  height: 26px;
+  width: 32px;
+  height: 32px;
   object-fit: contain;
   flex-shrink: 0;
-  filter: drop-shadow(0 0 4px rgba(255,255,255,0.15));
+  filter: drop-shadow(0 0 4px rgba(255,255,255,0.2));
 }
 
 .lg-name-tier-na {
