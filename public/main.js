@@ -877,22 +877,29 @@ function renderLiveGame(game, currentPlayer, container) {
                      : (soloQ?.tier && soloQ.tier !== "UNRANKED") ? soloQ
                      : null;
 
-    // URLs verificadas — jsDelivr CDN con assets oficiales de Riot
-    const TIER_ICON_MAP = {
-      IRON:        "https://cdn.jsdelivr.net/gh/magisteriis/lol-icons-and-emblems/tier-icons/base-icons/iron.png",
-      BRONZE:      "https://cdn.jsdelivr.net/gh/magisteriis/lol-icons-and-emblems/tier-icons/base-icons/bronze.png",
-      SILVER:      "https://cdn.jsdelivr.net/gh/magisteriis/lol-icons-and-emblems/tier-icons/base-icons/silver.png",
-      GOLD:        "https://cdn.jsdelivr.net/gh/magisteriis/lol-icons-and-emblems/tier-icons/base-icons/gold.png",
-      PLATINUM:    "https://cdn.jsdelivr.net/gh/magisteriis/lol-icons-and-emblems/tier-icons/base-icons/platinum.png",
-      EMERALD:     "https://cdn.jsdelivr.net/gh/magisteriis/lol-icons-and-emblems/tier-icons/base-icons/emerald.png",
-      DIAMOND:     "https://cdn.jsdelivr.net/gh/magisteriis/lol-icons-and-emblems/tier-icons/base-icons/diamond.png",
-      MASTER:      "https://cdn.jsdelivr.net/gh/magisteriis/lol-icons-and-emblems/tier-icons/base-icons/master.png",
-      GRANDMASTER: "https://cdn.jsdelivr.net/gh/magisteriis/lol-icons-and-emblems/tier-icons/base-icons/grandmaster.png",
-      CHALLENGER:  "https://cdn.jsdelivr.net/gh/magisteriis/lol-icons-and-emblems/tier-icons/base-icons/challenger.png",
+    // Íconos inline — colores oficiales de cada tier, sin CDN
+    const TIER_COLORS_MAP = {
+      IRON:        { bg: "#4a4a5a", border: "#8a8a9a", text: "#c0c0d0" },
+      BRONZE:      { bg: "#4a2a1a", border: "#cd7f32", text: "#e8a060" },
+      SILVER:      { bg: "#2a3040", border: "#aab4c8", text: "#c8d4e8" },
+      GOLD:        { bg: "#3a2a00", border: "#f0c060", text: "#f8d880" },
+      PLATINUM:    { bg: "#0a2a2a", border: "#4ac9a0", text: "#6addb8" },
+      EMERALD:     { bg: "#0a2a15", border: "#00e676", text: "#40f090" },
+      DIAMOND:     { bg: "#0a1a3a", border: "#4cc9f0", text: "#80d8f8" },
+      MASTER:      { bg: "#2a0a3a", border: "#c084fc", text: "#d8a8ff" },
+      GRANDMASTER: { bg: "#3a0a0a", border: "#ff6b6b", text: "#ff9090" },
+      CHALLENGER:  { bg: "#1a0a2a", border: "#f72585", text: "#ff60a8" },
     };
 
-    const nameTierIcon = tierToShow && TIER_ICON_MAP[tierToShow.tier]
-      ? `<img class="lg-name-tier-icon" src="${TIER_ICON_MAP[tierToShow.tier]}" title="${tierToShow.tier}" onerror="this.style.display='none'">`
+    const getTierBadge = (tier) => {
+      const c = TIER_COLORS_MAP[tier];
+      if (!c) return `<span class="lg-name-tier-na">N/A</span>`;
+      const abbr = tier === "GRANDMASTER" ? "GM" : tier === "CHALLENGER" ? "CH" : tier.slice(0, 2);
+      return `<span class="lg-tier-badge" style="background:${c.bg};border-color:${c.border};color:${c.text}">${abbr}</span>`;
+    };
+
+    const nameTierIcon = tierToShow
+      ? getTierBadge(tierToShow.tier)
       : `<span class="lg-name-tier-na">N/A</span>`;
 
     return `
