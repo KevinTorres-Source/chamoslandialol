@@ -158,9 +158,36 @@ h1 {
   color: #fff;
   text-transform: uppercase;
   line-height: 1.1;
+  text-shadow:
+    0 0 20px rgba(255,255,255,0.15),
+    0 0 40px rgba(255,255,255,0.05);
 }
 
-h1 span { color: var(--accent); }
+h1 span {
+  color: #f0c060;
+  text-shadow:
+    0 0 12px rgba(240,192,96,0.9),
+    0 0 30px rgba(240,192,96,0.6),
+    0 0 60px rgba(240,192,96,0.3),
+    0 0 90px rgba(240,192,96,0.15);
+  animation: goldPulse 3s ease-in-out infinite;
+}
+
+@keyframes goldPulse {
+  0%, 100% {
+    text-shadow:
+      0 0 12px rgba(240,192,96,0.9),
+      0 0 30px rgba(240,192,96,0.6),
+      0 0 60px rgba(240,192,96,0.3);
+  }
+  50% {
+    text-shadow:
+      0 0 16px rgba(240,192,96,1),
+      0 0 40px rgba(240,192,96,0.8),
+      0 0 80px rgba(240,192,96,0.4),
+      0 0 120px rgba(240,192,96,0.2);
+  }
+}
 
 .last-update {
   font-size: 0.68rem;
@@ -176,24 +203,33 @@ h1 span { color: var(--accent); }
   display: flex;
   align-items: center;
   gap: 8px;
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text);
+  background: rgba(240,192,96,0.08);
+  border: 1px solid rgba(240,192,96,0.6);
+  color: #f0c060;
   font-family: 'Outfit', sans-serif;
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 1px;
-  padding: 10px 20px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  padding: 11px 28px;
   border-radius: var(--radius);
   cursor: pointer;
   transition: all 0.2s;
   text-transform: uppercase;
+  box-shadow:
+    0 0 12px rgba(240,192,96,0.2),
+    inset 0 0 12px rgba(240,192,96,0.04);
+  text-shadow: 0 0 8px rgba(240,192,96,0.6);
 }
 
 .btn-update:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: rgba(200,155,60,0.05);
+  background: rgba(240,192,96,0.15);
+  border-color: #f0c060;
+  color: #f5d080;
+  box-shadow:
+    0 0 20px rgba(240,192,96,0.4),
+    0 0 40px rgba(240,192,96,0.15),
+    inset 0 0 16px rgba(240,192,96,0.08);
+  text-shadow: 0 0 12px rgba(240,192,96,0.9);
 }
 
 .btn-update:disabled { opacity: 0.5; cursor: not-allowed; }
