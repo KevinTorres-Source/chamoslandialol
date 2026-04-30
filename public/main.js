@@ -872,30 +872,28 @@ function renderLiveGame(game, currentPlayer, container) {
     const ranked  = p.ranked?.displayed;
     const soloQ   = p.ranked?.soloQ;
 
-    // Determinar el tier a mostrar — usar displayed o soloQ como fallback
+    // Determinar el tier a mostrar
     const tierToShow = (ranked?.tier && ranked.tier !== "UNRANKED") ? ranked
                      : (soloQ?.tier && soloQ.tier !== "UNRANKED") ? soloQ
                      : null;
 
+    // URLs que SÍ funcionan — usando Riot's emblem assets
     const TIER_ICON_MAP = {
-      IRON:        "https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-mini-crests/iron.png",
-      BRONZE:      "https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-mini-crests/bronze.png",
-      SILVER:      "https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-mini-crests/silver.png",
-      GOLD:        "https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-mini-crests/gold.png",
-      PLATINUM:    "https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-mini-crests/platinum.png",
-      EMERALD:     "https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-mini-crests/emerald.png",
-      DIAMOND:     "https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-mini-crests/diamond.png",
-      MASTER:      "https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-mini-crests/master.png",
-      GRANDMASTER: "https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-mini-crests/grandmaster.png",
-      CHALLENGER:  "https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/ranked-mini-crests/challenger.png",
+      IRON:        `https://ddragon.leagueoflegends.com/cdn/${ddVersion}/img/ranked-emblem/emblem-iron.png`,
+      BRONZE:      `https://ddragon.leagueoflegends.com/cdn/${ddVersion}/img/ranked-emblem/emblem-bronze.png`,
+      SILVER:      `https://ddragon.leagueoflegends.com/cdn/${ddVersion}/img/ranked-emblem/emblem-silver.png`,
+      GOLD:        `https://ddragon.leagueoflegends.com/cdn/${ddVersion}/img/ranked-emblem/emblem-gold.png`,
+      PLATINUM:    `https://ddragon.leagueoflegends.com/cdn/${ddVersion}/img/ranked-emblem/emblem-platinum.png`,
+      EMERALD:     `https://ddragon.leagueoflegends.com/cdn/${ddVersion}/img/ranked-emblem/emblem-emerald.png`,
+      DIAMOND:     `https://ddragon.leagueoflegends.com/cdn/${ddVersion}/img/ranked-emblem/emblem-diamond.png`,
+      MASTER:      `https://ddragon.leagueoflegends.com/cdn/${ddVersion}/img/ranked-emblem/emblem-master.png`,
+      GRANDMASTER: `https://ddragon.leagueoflegends.com/cdn/${ddVersion}/img/ranked-emblem/emblem-grandmaster.png`,
+      CHALLENGER:  `https://ddragon.leagueoflegends.com/cdn/${ddVersion}/img/ranked-emblem/emblem-challenger.png`,
     };
 
-    // Ícono de tier a la DERECHA del nombre
+    // Ícono a la derecha del nombre, N/A si sin ranked
     const nameTierIcon = tierToShow && TIER_ICON_MAP[tierToShow.tier]
-      ? `<img class="lg-name-tier-icon"
-           src="${TIER_ICON_MAP[tierToShow.tier]}"
-           onerror="this.parentNode.innerHTML='<span class=\\'lg-name-tier-na\\'>${tierToShow.tier.slice(0,2)}</span>'"
-           title="${tierToShow.tier}">`
+      ? `<img class="lg-name-tier-icon" src="${TIER_ICON_MAP[tierToShow.tier]}" title="${tierToShow.tier}" onerror="this.style.display='none'">`
       : `<span class="lg-name-tier-na">N/A</span>`;
 
     return `
