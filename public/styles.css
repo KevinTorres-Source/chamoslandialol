@@ -1572,3 +1572,511 @@ tbody tr.active-row { background: rgba(200,155,60,0.06); }
   border-radius: 4px;
   flex-shrink: 0;
 }
+
+/* =============================== */
+/* SOLOQ CHALLENGE EVENT           */
+/* =============================== */
+.header-btns {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-event {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(200,155,60,0.06);
+  border: 1px solid rgba(200,155,60,0.3);
+  color: rgba(200,155,60,0.8);
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  padding: 9px 18px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+}
+
+.btn-event:hover {
+  background: rgba(200,155,60,0.12);
+  border-color: rgba(200,155,60,0.6);
+  color: var(--accent);
+}
+
+/* SECCIÓN EVENTO */
+.event-section {
+  margin-top: 32px;
+  background: var(--bg2);
+  border: 1px solid rgba(200,155,60,0.2);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 24px rgba(200,155,60,0.06), 0 0 1px rgba(200,155,60,0.25);
+}
+
+.event-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 18px 24px;
+  background: rgba(200,155,60,0.05);
+  border-bottom: 1px solid rgba(200,155,60,0.12);
+}
+
+.event-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.event-icon { font-size: 1.4rem; }
+
+.event-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.event-status {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #6b7a8d;
+  border: 1px solid #2a3a50;
+  border-radius: 3px;
+  padding: 3px 8px;
+}
+
+.event-status--active {
+  color: #4ade80;
+  border-color: rgba(74,222,128,0.4);
+  background: rgba(74,222,128,0.08);
+  box-shadow: 0 0 8px rgba(74,222,128,0.15);
+  animation: eventPulse 2s ease-in-out infinite;
+}
+
+@keyframes eventPulse {
+  0%,100% { box-shadow: 0 0 8px rgba(74,222,128,0.15); }
+  50%      { box-shadow: 0 0 14px rgba(74,222,128,0.3); }
+}
+
+.event-controls { display: flex; gap: 8px; align-items: center; }
+
+.btn-event-start, .btn-event-stop, .btn-event-reset {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: 1px solid;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-transform: uppercase;
+}
+
+.btn-event-start {
+  background: rgba(74,222,128,0.08);
+  border-color: rgba(74,222,128,0.4);
+  color: #4ade80;
+}
+.btn-event-start:hover { background: rgba(74,222,128,0.18); }
+
+.btn-event-stop {
+  background: rgba(250,204,21,0.08);
+  border-color: rgba(250,204,21,0.4);
+  color: #facc15;
+}
+.btn-event-stop:hover { background: rgba(250,204,21,0.18); }
+
+.btn-event-reset {
+  background: rgba(248,113,113,0.06);
+  border-color: rgba(248,113,113,0.3);
+  color: #f87171;
+}
+.btn-event-reset:hover { background: rgba(248,113,113,0.15); }
+
+.event-desc {
+  padding: 10px 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.event-desc p {
+  font-size: 0.78rem;
+  color: #6b7a8d;
+  font-family: 'DM Sans', sans-serif;
+  margin: 0;
+}
+
+.event-table-wrap { padding: 16px 0; }
+
+.event-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 40px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.event-pending {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 48px 24px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.event-pending-icon { font-size: 2.5rem; opacity: 0.3; }
+.event-pending p { font-size: 0.85rem; line-height: 1.6; opacity: 0.6; }
+
+/* TABLA DEL EVENTO */
+.event-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.event-table thead tr {
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+}
+
+.event-table th {
+  padding: 12px 16px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-align: left;
+}
+
+.ev-row {
+  border-bottom: 1px solid rgba(30,45,69,0.5);
+  transition: background 0.15s;
+}
+.ev-row:last-child { border-bottom: none; }
+.ev-row:hover { background: rgba(200,155,60,0.04); }
+
+.ev-row td { padding: 14px 16px; vertical-align: middle; }
+
+.ev-col-rank  { width: 52px; text-align: center; font-size: 1.3rem; }
+.ev-col-player { min-width: 160px; }
+.ev-col-elo   { min-width: 130px; }
+.ev-col-lp    { width: 110px; font-family: 'Outfit', sans-serif; font-size: 0.9rem; font-weight: 700; }
+.ev-col-gained { width: 110px; font-family: 'Outfit', sans-serif; font-size: 1rem; }
+.ev-col-bar   { min-width: 140px; }
+
+.ev-name {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  display: block;
+}
+.ev-tag { font-size: 0.72rem; color: var(--text-muted); }
+.ev-lp-small { font-size: 0.72rem; color: var(--text-muted); margin-left: 6px; }
+.ev-unranked { font-size: 0.8rem; color: var(--text-muted); }
+.ev-rank-num { font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 700; color: #3a4a60; }
+
+.ev-bar-track {
+  height: 6px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.ev-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.6s ease;
+  box-shadow: 0 0 6px currentColor;
+}
+
+/* Móvil */
+@media (max-width: 600px) {
+  .header-btns { flex-direction: column; gap: 6px; }
+  .btn-event { font-size: 0.7rem; padding: 7px 14px; }
+  .event-header { flex-direction: column; align-items: flex-start; }
+  .ev-col-bar, .ev-col-lp { display: none; }
+  .event-table th, .ev-row td { padding: 10px 8px; }
+}
+
+/* =============================== */
+/* HEADER BUTTONS ROW              */
+/* =============================== */
+.header-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn-event {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(147,51,234,0.08);
+  border: 1px solid rgba(147,51,234,0.5);
+  color: #c084fc;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  padding: 11px 24px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  box-shadow: 0 0 12px rgba(147,51,234,0.15), inset 0 0 12px rgba(147,51,234,0.04);
+  text-shadow: 0 0 8px rgba(192,132,252,0.5);
+}
+
+.btn-event:hover {
+  background: rgba(147,51,234,0.18);
+  border-color: #c084fc;
+  color: #d8b4fe;
+  box-shadow: 0 0 24px rgba(147,51,234,0.35), 0 0 48px rgba(147,51,234,0.12);
+}
+
+/* =============================== */
+/* EVENTO SOLOQ CHALLENGE          */
+/* =============================== */
+.event-section {
+  margin-top: 40px;
+  border: 1px solid rgba(147,51,234,0.25);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--bg2);
+  box-shadow: 0 0 24px rgba(147,51,234,0.08), 0 0 1px rgba(147,51,234,0.3);
+}
+
+.event-header {
+  padding: 28px 32px 24px;
+  background: linear-gradient(135deg, rgba(147,51,234,0.08) 0%, transparent 60%);
+  border-bottom: 1px solid rgba(147,51,234,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.event-title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.event-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 20px;
+  width: fit-content;
+}
+
+.event-badge--upcoming {
+  background: rgba(100,100,120,0.2);
+  border: 1px solid rgba(150,150,180,0.3);
+  color: #9aa4b2;
+}
+
+.event-badge--active {
+  background: rgba(74,222,128,0.12);
+  border: 1px solid rgba(74,222,128,0.4);
+  color: #4ade80;
+  animation: eventPulse 2s ease-in-out infinite;
+}
+
+.event-badge--stopped {
+  background: rgba(251,191,36,0.1);
+  border: 1px solid rgba(251,191,36,0.35);
+  color: #fbbf24;
+}
+
+@keyframes eventPulse {
+  0%,100% { box-shadow: 0 0 8px rgba(74,222,128,0.2); }
+  50%      { box-shadow: 0 0 16px rgba(74,222,128,0.4); }
+}
+
+.event-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: 4px;
+  color: #fff;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.event-title span {
+  color: #c084fc;
+  text-shadow: 0 0 20px rgba(192,132,252,0.5);
+}
+
+.event-subtitle {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-family: 'DM Sans', sans-serif;
+  max-width: 500px;
+  line-height: 1.5;
+}
+
+/* TABLA DEL EVENTO */
+.event-table-wrapper {
+  padding: 0;
+}
+
+.event-loading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 32px;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.event-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.event-table thead tr {
+  background: var(--bg3);
+  border-bottom: 1px solid rgba(147,51,234,0.15);
+}
+
+.event-table th {
+  padding: 14px 20px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(192,132,252,0.7);
+  text-align: left;
+}
+
+.event-table td {
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(30,45,69,0.4);
+  vertical-align: middle;
+}
+
+.event-table tbody tr:last-child td { border-bottom: none; }
+
+.event-table tbody tr {
+  transition: background 0.15s;
+}
+
+.event-table tbody tr:hover { background: rgba(147,51,234,0.04); }
+
+/* Columna rank */
+.ev-rank { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 700; color: #3a4a60; text-align: center; }
+
+/* Columna jugador */
+.ev-player { display: flex; align-items: center; gap: 10px; }
+.ev-icon { width: 38px; height: 38px; border-radius: 50%; border: 2px solid rgba(147,51,234,0.3); object-fit: cover; }
+.ev-name { font-weight: 600; font-size: 0.92rem; color: #e2e8f0; }
+.ev-tag  { font-size: 0.7rem; color: var(--text-muted); }
+
+/* Columna ELO actual */
+.ev-tier {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 3px;
+  border: 1px solid;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Columna LP ganados */
+.ev-lp-pos { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1rem; color: #4ade80; }
+.ev-lp-neg { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1rem; color: #f87171; }
+.ev-lp-zero { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1rem; color: #9aa4b2; }
+.ev-lp-none { font-family: 'DM Sans', sans-serif; font-size: 0.8rem; color: var(--text-muted); }
+
+/* Barra de progreso */
+.ev-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 160px;
+}
+
+.ev-bar-track {
+  flex: 1;
+  height: 5px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.ev-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.6s ease;
+}
+
+.ev-bar-label {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  font-family: 'DM Sans', sans-serif;
+  white-space: nowrap;
+  min-width: 40px;
+}
+
+/* Próximamente overlay */
+.ev-upcoming-overlay {
+  padding: 48px 32px;
+  text-align: center;
+  color: var(--text-muted);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.ev-upcoming-icon { font-size: 2.5rem; opacity: 0.4; }
+
+/* Mobile */
+@media (max-width: 600px) {
+  .header-buttons { flex-direction: column; gap: 8px; width: 100%; }
+  .btn-event { font-size: 0.7rem; padding: 7px 14px; letter-spacing: 1.5px; justify-content: center; }
+  .event-header { padding: 20px 16px 16px; }
+  .event-title { font-size: 1.3rem; letter-spacing: 2px; }
+  .event-table th, .event-table td { padding: 10px 12px; }
+  .ev-bar-wrap { min-width: 80px; }
+}
