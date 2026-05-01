@@ -1087,5 +1087,227 @@ function buildMatchPlaceholder(player) {
 // ===============================
 fetchDDragonVersion().then(() => {
   cargarJugadores();
+  cargarEvento();
 });
 setInterval(cargarJugadores, 5 * 60 * 1000);
+setInterval(cargarEvento, 2 * 60 * 1000);
+
+// ===============================
+// ⚔️ SOLOQ CHALLENGE EVENT
+// ===============================
+function scrollToEvent() {
+  document.getElementById("eventSection")?.scrollIntoView({ behavior: "smooth" });
+}
+
+async function cargarEvento() {
+  const loading = document.getElementById("eventLoading");
+  const table   = document.getElementById("eventTable");
+  const pending = document.getElementById("eventPending");
+  const status  = document.getElementById("eventStatus");
+  const btnStop  = document.getElementById("btnEventStop");
+  const btnStart = document.getElementById("btnEventStart");
+
+  if (loading) loading.style.display = "flex";
+  if (table)   table.style.display   = "none";
+  if (pending) pending.style.display = "none";
+
+  try {
+    const res  = await fetch("/api/event");
+    const data = await res.json();
+
+    if (loading) loading.style.display = "none";
+
+    // Actualizar estado visual
+    if (status) {
+      if (data.active) {
+        status.textContent  = "EN CURSO";
+        status.className    = "event-status event-status--active";
+      } else {
+        status.textContent  = "PRÓXIMAMENTE";
+        status.className    = "event-status";
+      }
+    }
+
+    if (btnStart) btnStart.style.display = data.active ? "none"  : "inline-flex";
+    if (btnStop)  btnStop.style.display  = data.active ? "inline-flex" : "none";
+
+    if (!data.active || !data.results?.some(r => r.gained !== null)) {
+      if (pending) pending.style.display = "flex";
+      return;
+    }
+
+    if (table) table.style.display = "table";
+    renderEventTable(data.results);
+
+  } catch (err) {
+    if (loading) loading.style.display = "none";
+    if (pending) pending.style.display = "flex";
+  }
+}
+
+function renderEventTable(results) {
+  const tbody = document.getElementById("eventTbody");
+  if (!tbody) return;
+
+  const max = Math.max(...results.map(r => r.gained ?? 0), 1);
+
+  tbody.innerHTML = results.map((r, i) => {
+    const gained  = r.gained ?? 0;
+    const pct     = Math.max(0, Math.min(100, (gained / max) * 100));
+    const color   = gained > 0 ? "#4ade80" : gained < 0 ? "#f87171" : "#6b7a8d";
+    const sign    = gained > 0 ? "+" : "";
+    const soloQ   = r.soloQ;
+    const tierColor = {
+      IRON:"#6b7280",BRONZE:"#cd7f32",SILVER:"#aab4c8",GOLD:"#f0c060",
+      PLATINUM:"#4ac9a0",EMERALD:"#00e676",DIAMOND:"#4cc9f0",
+      MASTER:"#c084fc",GRANDMASTER:"#ff6b6b",CHALLENGER:"#f72585"
+    }[soloQ?.tier] || "#555e6e";
+
+    const eloText = soloQ?.tier && soloQ.tier !== "UNRANKED"
+      ? `<span style="color:${tierColor}">${soloQ.tier} ${soloQ.rank}</span><span class="ev-lp-small">${soloQ.lp} LP</span>`
+      : `<span class="ev-unranked">Sin ranked</span>`;
+
+    const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `<span class="ev-rank-num">${i+1}</span>`;
+
+    return `
+      <tr class="ev-row">
+        <td class="ev-col-rank">${medal}</td>
+        <td class="ev-col-player">
+          <span class="ev-name">${r.name}</span>
+          <span class="ev-tag">#${r.tag}</span>
+        </td>
+        <td class="ev-col-elo">${eloText}</td>
+        <td class="ev-col-lp" style="color:${tierColor}">${r.currentLP} LP</td>
+        <td class="ev-col-gained" style="color:${color};font-weight:700">${sign}${gained} LP</td>
+        <td class="ev-col-bar">
+          <div class="ev-bar-track">
+            <div class="ev-bar-fill" style="width:${pct}%;background:${color}"></div>
+          </div>
+        </td>
+      </tr>`;
+  }).join("");
+}
+
+async function startEvent() {
+  if (!confirm("¿Iniciar el evento ahora? Se guardará el LP actual de todos los jugadores como punto de partida.")) return;
+  const res = await fetch("/api/event?action=start", { method: "POST" });
+  const data = await res.json();
+  if (data.ok) { alert("✅ Evento iniciado"); cargarEvento(); }
+}
+
+async function stopEvent() {
+  if (!confirm("¿Pausar el evento?")) return;
+  const res = await fetch("/api/event?action=stop", { method: "POST" });
+  const data = await res.json();
+  if (data.ok) { alert("⏸ Evento pausado"); cargarEvento(); }
+}
+
+async function resetEvent() {
+  if (!confirm("¿Resetear el evento? Se borrarán todos los datos acumulados.")) return;
+  const res = await fetch("/api/event?action=reset", { method: "POST" });
+  const data = await res.json();
+  if (data.ok) { alert("↺ Evento reseteado"); cargarEvento(); }
+}
+// ===============================
+// ⚔ EVENTO SOLOQ CHALLENGE
+// ===============================
+const TIER_COLORS_EVENT = {
+  IRON:"#6b7280", BRONZE:"#cd7f32", SILVER:"#aab4c8", GOLD:"#f0c060",
+  PLATINUM:"#4ac9a0", EMERALD:"#00e676", DIAMOND:"#4cc9f0",
+  MASTER:"#c084fc", GRANDMASTER:"#ff6b6b", CHALLENGER:"#f72585", UNRANKED:"#555e6e"
+};
+
+function scrollToEvent() {
+  const el = document.getElementById("eventSection");
+  if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+async function loadEventData() {
+  const loading  = document.getElementById("eventLoading");
+  const table    = document.getElementById("eventTable");
+  const tbody    = document.getElementById("eventTbody");
+  const badge    = document.getElementById("eventBadge");
+  const subtitle = document.getElementById("eventSubtitle");
+  if (!loading || !table || !tbody) return;
+
+  try {
+    const res  = await fetch("/api/event");
+    const data = await res.json();
+
+    // Badge de estado
+    if (badge) {
+      if (data.active) {
+        badge.textContent  = "🟢 EN CURSO";
+        badge.className    = "event-badge event-badge--active";
+        if (subtitle) subtitle.textContent = `Iniciado el ${new Date(data.startedAt).toLocaleDateString("es-ES", { day:"numeric", month:"long", hour:"2-digit", minute:"2-digit" })}`;
+      } else if (data.startedAt && !data.active) {
+        badge.textContent = "⏸ PAUSADO";
+        badge.className   = "event-badge event-badge--stopped";
+      } else {
+        badge.textContent = "⏸ PRÓXIMAMENTE";
+        badge.className   = "event-badge event-badge--upcoming";
+        if (subtitle) subtitle.textContent = "El evento comenzará pronto. Los LP se contarán desde el inicio.";
+      }
+    }
+
+    loading.style.display = "none";
+
+    // Si no hay snapshot todavía, mostrar tabla vacía con -- en LP
+    const standings = data.standings || [];
+    const hasData   = standings.some(s => s.gained !== null);
+    const maxGained = hasData ? Math.max(...standings.map(s => s.gained || 0), 1) : 1;
+
+    table.style.display = "";
+    tbody.innerHTML = standings.map((s, i) => {
+      const color = TIER_COLORS_EVENT[s.currentTier] || "#9aa4b2";
+      const tierLabel = s.currentTier !== "UNRANKED"
+        ? `<span class="ev-tier" style="color:${color};border-color:${color}33;background:${color}11">${s.currentTier} ${s.currentRank}</span>`
+        : `<span class="ev-tier" style="color:#555e6e;border-color:#2a3a4a;background:#1a2535">Sin ranked</span>`;
+
+      let lpCell = `<span class="ev-lp-none">—</span>`;
+      let barFill = "";
+      if (s.gained !== null) {
+        const pct = Math.max(0, Math.min(100, (s.gained / maxGained) * 100));
+        const barColor = s.gained > 0 ? "#4ade80" : s.gained < 0 ? "#f87171" : "#9aa4b2";
+        const cls = s.gained > 0 ? "ev-lp-pos" : s.gained < 0 ? "ev-lp-neg" : "ev-lp-zero";
+        lpCell  = `<span class="${cls}">${s.gained > 0 ? "+" : ""}${s.gained} LP</span>`;
+        barFill = `<div class="ev-bar-fill" style="width:${pct}%;background:${barColor}"></div>`;
+      }
+
+      const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `<span style="font-size:0.9rem;color:#3a4a60">${i+1}</span>`;
+      const iconUrl = `https://ddragon.leagueoflegends.com/cdn/${ddVersion}/img/profileicon/${s.profileIconId || 29}.png`;
+
+      return `<tr>
+        <td class="ev-rank">${medal}</td>
+        <td>
+          <div class="ev-player">
+            <img class="ev-icon" src="${iconUrl}" onerror="this.src='https://ddragon.leagueoflegends.com/cdn/${ddVersion}/img/profileicon/29.png'">
+            <div>
+              <div class="ev-name">${s.name}</div>
+              <div class="ev-tag">#${s.tag}</div>
+            </div>
+          </div>
+        </td>
+        <td>${tierLabel}</td>
+        <td>${lpCell}</td>
+        <td>
+          <div class="ev-bar-wrap">
+            <div class="ev-bar-track"><div class="ev-bar-fill" style="width:${
+              s.gained !== null ? Math.max(0,Math.min(100,(s.gained/maxGained)*100)) : 0
+            }%;background:${s.gained > 0 ? "#4ade80" : s.gained < 0 ? "#f87171" : "#4a5a72"}"></div></div>
+          </div>
+        </td>
+      </tr>`;
+    }).join("");
+
+  } catch (err) {
+    if (loading) {
+      loading.innerHTML = `<span style="color:#f87171">Error cargando evento</span>`;
+    }
+  }
+}
+
+// Carga el evento al iniciar
+document.addEventListener("DOMContentLoaded", () => {
+  loadEventData();
+});
