@@ -545,7 +545,7 @@ function updateChartMode(mode) {
 async function cargarHistorial(players) {
   let usedServerData = false;
   try {
-    const res = await fetch("http://localhost:3000/history");
+    const res = await fetch("/api/history");
     if (res.ok) {
       const history = await res.json();
       if (history && history.length >= 2) {
@@ -577,7 +577,7 @@ async function cargarJugadores() {
   tbody.innerHTML        = "";
 
   try {
-    const res = await fetch("http://localhost:3000/players");
+    const res = await fetch("/api/players");
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const jugadores = await res.json();
     loading.style.display = "none";
@@ -612,7 +612,7 @@ async function actualizarElo() {
   btn.innerHTML = '<span class="btn-icon spinning">↻</span> Actualizando...';
 
   try {
-    const res = await fetch("http://localhost:3000/update");
+    const res = await fetch("/api/update");
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     allPlayers  = data.players;
@@ -790,7 +790,7 @@ async function loadMatchHistory(player) {
   container.innerHTML = `<div class="pf-loading"><div class="spinner"></div> Cargando partidas...</div>`;
 
   try {
-    const res = await fetch(`http://localhost:3000/matches/${player.puuid}`);
+    const res = await fetch(`/api/matches/${player.puuid}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const matches = await res.json();
     renderMatchHistory(matches, container, player);
