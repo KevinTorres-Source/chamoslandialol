@@ -56,7 +56,7 @@ function winrate(wins, losses) {
 
 function formatWR(wr) {
   if (wr === null) return '<span class="unranked-text">—</span>';
-  const color = wr >= 55 ? "#4ade80" : wr >= 50 ? "#facc15" : "#f87171";
+  const color = wr > 50 ? "#4ade80" : wr === 50 ? "#9aa4b2" : "#f87171";
   return `<span style="color:${color};font-weight:600">${wr}%</span>`;
 }
 
@@ -125,6 +125,18 @@ function getChampIconUrl(champName) {
   };
   const name = fixes[champName] || champName.replace(/[' ]/g, "");
   return `https://ddragon.leagueoflegends.com/cdn/${ddVersion}/img/champion/${name}.png`;
+}
+
+function getRoleIconUrl(role) {
+  const base = "https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions";
+  const map = {
+    TOP:     `${base}/icon-position-top.png`,
+    JUNGLE:  `${base}/icon-position-jungle.png`,
+    MIDDLE:  `${base}/icon-position-middle.png`,
+    BOTTOM:  `${base}/icon-position-bottom.png`,
+    UTILITY: `${base}/icon-position-utility.png`,
+  };
+  return map[role?.toUpperCase()] || null;
 }
 
 async function fetchDDragonVersion() {
@@ -242,25 +254,35 @@ function eloScoreToLabel(score) {
  * basado en el score actual de cada jugador.
  * Esto da datos reales y contextualizados al gráfico desde el primer día.
  */
+/**
+ * Snapea un eloScore (número) a un valor válido:
+ * - LP siempre entre 0 y 99
+ * - Tier/rank se mantiene según la escala interna
+ * Esto evita valores imposibles como "GOLD 359 LP"
+ */
+function clampToValidElo(score) {
+  if (!score || score <= 0) return 0;
+  const tier = Math.floor(score / 10000);       // 1=IRON … 10=CHALLENGER
+  const rank = Math.floor((score % 10000) / 1000); // 0-3 → IV-I
+  const lp   = score % 1000;
+
+  // Clamp LP a 0-99 (100 LP = sube de división, no es un estado válido)
+  const clampedLp = Math.min(99, Math.max(0, lp));
+  return tier * 10000 + rank * 1000 + clampedLp;
+}
+
 function generateSeasonHistory(players, mode) {
-  const now = Date.now();
-  // Últimos 2 meses: desde el 1 de marzo 2025
+  const now         = Date.now();
   const seasonStart = new Date("2025-04-01").getTime();
-  const totalMs = now - seasonStart;
-  // Un punto cada 1 día desde abril
-  const intervalMs = 1 * 24 * 60 * 60 * 1000;
-  const numPoints = Math.floor(totalMs / intervalMs) + 1;
+  const totalMs     = now - seasonStart;
+  const intervalMs  = 24 * 60 * 60 * 1000; // 1 punto por día
+  const numPoints   = Math.floor(totalMs / intervalMs) + 1;
 
   const labels = [];
   const datasets = players.map((p, idx) => {
     const finalScore = mode === "soloQ" ? eloScore(p.soloQ) : eloScore(p.flexQ);
     const color = CHART_COLORS[idx % CHART_COLORS.length];
-    return {
-      label: p.name,
-      color,
-      finalScore,
-      data: []
-    };
+    return { label: p.name, color, finalScore, data: [] };
   });
 
   for (let i = 0; i < numPoints; i++) {
@@ -268,28 +290,29 @@ function generateSeasonHistory(players, mode) {
     const d  = new Date(ts);
     labels.push(`${d.getDate()}/${d.getMonth() + 1}`);
 
-    // Progreso relativo: 0 al inicio, 1 al final
-    const progress = i / (numPoints - 1);
+    const progress = numPoints > 1 ? i / (numPoints - 1) : 1;
 
     datasets.forEach(ds => {
-      if (ds.finalScore === 0) {
-        ds.data.push(null);
-        return;
-      }
-      // Punto de partida: ~GOLD IV (score ~40000) con variación
-      const playerSeed = ds.label.charCodeAt(0) + ds.label.charCodeAt(ds.label.length - 1);
-      const startTierOffset = ((playerSeed % 5) - 2) * 5000; // variación entre jugadores
-      const startScore = 40000 + startTierOffset;
+      if (ds.finalScore === 0) { ds.data.push(null); return; }
 
-      // Trayectoria con curva natural (subidas y bajadas) + tendencia hacia finalScore
-      const baseProgress = startScore + (ds.finalScore - startScore) * easeInOutQuad(progress);
-      // Ruido basado en senoidal + pseudoaleatorio determinístico
-      const noise = Math.sin(i * 0.7 + playerSeed) * 3000 + Math.sin(i * 1.3 + playerSeed * 0.5) * 1500;
-      // Al final, convergemos al score real
-      const blend = progress > 0.85 ? (progress - 0.85) / 0.15 : 0;
-      const val = Math.round(baseProgress + noise * (1 - blend));
+      // Seed determinístico por jugador
+      const seed = ds.label.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
 
-      ds.data.push(Math.max(10000, val)); // mínimo IRON IV
+      // Punto de partida: 1 tier por debajo del actual, mínimo SILVER IV
+      const startScore = Math.max(30000, ds.finalScore - 15000);
+
+      // Trayectoria suave hacia el score final
+      const base = startScore + (ds.finalScore - startScore) * easeInOutQuad(progress);
+
+      // Ruido pequeño: máximo ±800 (menos de 1 división), se reduce al final
+      const noiseAmp = 800 * (1 - progress * 0.7);
+      const noise    = Math.sin(i * 0.5 + seed * 0.1) * noiseAmp
+                     + Math.sin(i * 1.1 + seed * 0.3) * noiseAmp * 0.4;
+
+      // Aplicar ruido y clamp a LP válido (0-99 dentro de cada división)
+      const raw      = Math.round(base + noise);
+      const clamped  = clampToValidElo(Math.max(10000, raw));
+      ds.data.push(clamped);
     });
   }
 
@@ -298,6 +321,12 @@ function generateSeasonHistory(players, mode) {
 
 function easeInOutQuad(t) {
   return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+}
+
+function renderSeasonChart() {
+  if (allPlayers.length === 0) return;
+  const { labels, datasets } = generateSeasonHistory(allPlayers, chartMode);
+  renderChart(labels, datasets);
 }
 
 function buildChartDatasets(history, mode, players) {
@@ -535,37 +564,29 @@ function updateChartMode(mode) {
   document.querySelectorAll(".chart-btn").forEach(btn =>
     btn.classList.toggle("chart-btn--active", btn.dataset.mode === mode)
   );
-  renderSeasonChart();
+  cargarHistorial(allPlayers);
 }
 
 /**
- * Carga historial del servidor; si tiene menos de 2 puntos,
- * usa datos generados desde inicio de temporada para que el gráfico no quede plano.
+ * Carga historial real desde el servidor.
+ * Si no hay datos aún, muestra el mensaje "sin datos" en el gráfico.
  */
 async function cargarHistorial(players) {
-  let usedServerData = false;
   try {
-    const res = await fetch("http://localhost:3000/history");
+    const res = await fetch("/api/history");
     if (res.ok) {
       const history = await res.json();
       if (history && history.length >= 2) {
         const labels   = buildChartLabels(history);
         const datasets = buildChartDatasets(history, chartMode, players);
         renderChart(labels, datasets);
-        usedServerData = true;
+        return;
       }
     }
   } catch {}
 
-  if (!usedServerData) {
-    renderSeasonChart();
-  }
-}
-
-function renderSeasonChart() {
-  if (allPlayers.length === 0) return;
-  const { labels, datasets } = generateSeasonHistory(allPlayers, chartMode);
-  renderChart(labels, datasets);
+  // Sin datos reales: usa simulación corregida como placeholder
+  renderSeasonChart();
 }
 
 // ===============================
@@ -577,7 +598,7 @@ async function cargarJugadores() {
   tbody.innerHTML        = "";
 
   try {
-    const res = await fetch("http://localhost:3000/players");
+    const res = await fetch("/api/players");
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const jugadores = await res.json();
     loading.style.display = "none";
@@ -612,7 +633,7 @@ async function actualizarElo() {
   btn.innerHTML = '<span class="btn-icon spinning">↻</span> Actualizando...';
 
   try {
-    const res = await fetch("http://localhost:3000/update");
+    const res = await fetch("/api/update");
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     allPlayers  = data.players;
@@ -669,6 +690,7 @@ function selectPlayerProfile(name, players) {
   if (!player) return;
 
   renderProfileData(player);
+  checkLiveGame(player);
   loadMatchHistory(player);
 }
 
@@ -687,7 +709,7 @@ function renderProfileData(player) {
   const iconUrl    = getProfileIconUrl(player.profileIconId);
   const opggUrl    = getOpggUrl(player.name, player.tag);
 
-  const wrColor = (wr) => wr === null ? "#9aa4b2" : wr >= 55 ? "#4ade80" : wr >= 50 ? "#facc15" : "#f87171";
+  const wrColor = (wr) => wr === null ? "#9aa4b2" : wr > 50 ? "#4ade80" : wr === 50 ? "#9aa4b2" : "#f87171";
   const tierColor = (t) => TIER_COLORS[t] || "#9aa4b2";
 
   // Barra de progreso LP dentro del tier actual
@@ -748,6 +770,9 @@ function renderProfileData(player) {
 
     ${lpBar}
 
+    <!-- PARTIDA EN VIVO -->
+    <div id="liveGameContainer"></div>
+
     <!-- ÚLTIMAS PARTIDAS -->
     <div class="pf-matches-title">ÚLTIMAS PARTIDAS RANKED</div>
     <div id="matchHistoryContainer">
@@ -780,6 +805,142 @@ function buildLPBar(soloQ) {
   `;
 }
 
+
+// ===============================
+// 🔴 PARTIDA EN VIVO
+// ===============================
+let liveGameInterval = null;
+
+async function checkLiveGame(player) {
+  const container = document.getElementById("liveGameContainer");
+  if (!container) return;
+
+  // Limpiar intervalo anterior
+  if (liveGameInterval) { clearInterval(liveGameInterval); liveGameInterval = null; }
+
+  container.innerHTML = "";
+
+  try {
+    const res  = await fetch(`/api/live/${player.puuid}`);
+    const data = await res.json();
+
+    if (!data || data.inGame === false || !data.gameId) return;
+
+    renderLiveGame(data, player, container);
+
+    // Actualizar el timer cada segundo
+    liveGameInterval = setInterval(() => {
+      const el = document.getElementById("liveGameTimer");
+      if (!el) { clearInterval(liveGameInterval); return; }
+      const elapsed = Math.floor((Date.now() - data.gameStartTime) / 1000);
+      el.textContent = formatDuration(elapsed);
+    }, 1000);
+
+  } catch {}
+}
+
+function formatDuration(secs) {
+  const m = Math.floor(secs / 60);
+  const s = String(secs % 60).padStart(2, "0");
+  return `${m}:${s}`;
+}
+
+function renderLiveGame(game, currentPlayer, container) {
+  const blue    = game.participants.filter(p => p.teamId === 100);
+  const red     = game.participants.filter(p => p.teamId === 200);
+  const elapsed = Math.floor((Date.now() - game.gameStartTime) / 1000);
+
+  const TIER_COLORS = {
+    IRON:"#6b7280", BRONZE:"#cd7f32", SILVER:"#aab4c8", GOLD:"#f0c060",
+    PLATINUM:"#4ac9a0", EMERALD:"#00e676", DIAMOND:"#4cc9f0",
+    MASTER:"#c084fc", GRANDMASTER:"#ff6b6b", CHALLENGER:"#f72585", UNRANKED:"#4a5a72"
+  };
+
+  const fmtRanked = (r) => {
+    if (!r || r.tier === "UNRANKED" || !r.tier) return `<span class="lg-unranked">Sin ranked</span>`;
+    const color = TIER_COLORS[r.tier] || "#fff";
+    const wrColor = r.wr === null ? "" : r.wr > 50 ? "#4ade80" : r.wr === 50 ? "#9aa4b2" : "#f87171";
+    const wr = r.wr !== null ? `<span class="lg-wr" style="color:${wrColor}">${r.wr}%</span>` : "";
+    return `<span class="lg-tier" style="color:${color}">${r.tier} ${r.rank}</span>
+            <span class="lg-lp">${r.lp} LP</span>${wr}`;
+  };
+
+  const playerRow = (p) => {
+    const isSelf  = p.puuid === currentPlayer.puuid;
+    const champ   = p.championName ? getChampIconUrl(p.championName) : "";
+    const name    = (p.summonerName || "?").replace(/#.*$/, "").slice(0, 16);
+    const ranked  = p.ranked?.displayed;
+    const soloQ   = p.ranked?.soloQ;
+
+    // Determinar el tier a mostrar
+    const tierToShow = (ranked?.tier && ranked.tier !== "UNRANKED") ? ranked
+                     : (soloQ?.tier && soloQ.tier !== "UNRANKED") ? soloQ
+                     : null;
+
+    // Íconos inline — colores oficiales de cada tier, sin CDN
+    const TIER_COLORS_MAP = {
+      IRON:        { bg: "#4a4a5a", border: "#8a8a9a", text: "#c0c0d0" },
+      BRONZE:      { bg: "#4a2a1a", border: "#cd7f32", text: "#e8a060" },
+      SILVER:      { bg: "#2a3040", border: "#aab4c8", text: "#c8d4e8" },
+      GOLD:        { bg: "#3a2a00", border: "#f0c060", text: "#f8d880" },
+      PLATINUM:    { bg: "#0a2a2a", border: "#4ac9a0", text: "#6addb8" },
+      EMERALD:     { bg: "#0a2a15", border: "#00e676", text: "#40f090" },
+      DIAMOND:     { bg: "#0a1a3a", border: "#4cc9f0", text: "#80d8f8" },
+      MASTER:      { bg: "#2a0a3a", border: "#c084fc", text: "#d8a8ff" },
+      GRANDMASTER: { bg: "#3a0a0a", border: "#ff6b6b", text: "#ff9090" },
+      CHALLENGER:  { bg: "#1a0a2a", border: "#f72585", text: "#ff60a8" },
+    };
+
+    const getTierBadge = (tier) => {
+      const c = TIER_COLORS_MAP[tier];
+      if (!c) return `<span class="lg-name-tier-na">N/A</span>`;
+      const abbr = tier === "GRANDMASTER" ? "GM" : tier === "CHALLENGER" ? "CH" : tier.slice(0, 2);
+      return `<span class="lg-tier-badge" style="background:${c.bg};border-color:${c.border};color:${c.text}">${abbr}</span>`;
+    };
+
+    const nameTierIcon = tierToShow
+      ? getTierBadge(tierToShow.tier)
+      : `<span class="lg-name-tier-na">N/A</span>`;
+
+    return `
+      <div class="lg-row${isSelf ? " lg-self" : ""}">
+        <div class="lg-row-champ">
+          ${champ ? `<img class="lg-champ-img" src="${champ}" onerror="this.style.opacity='0.3'">` : `<div class="lg-champ-ph"></div>`}
+        </div>
+        <div class="lg-row-name">
+          <div class="lg-name-row">
+            <span class="lg-summ-name">${name}</span>
+            ${nameTierIcon}
+          </div>
+          ${soloQ && soloQ.tier !== "UNRANKED" ? `<span class="lg-games">${(soloQ.wins||0)+(soloQ.losses||0)} partidas</span>` : ""}
+        </div>
+        <div class="lg-row-ranked">
+          <div class="lg-row-ranked-text">${fmtRanked(ranked)}</div>
+        </div>
+      </div>`;
+  };
+
+  const teamBlock = (team, label, color) => `
+    <div class="lg-team-block">
+      <div class="lg-team-header" style="color:${color}">${label}</div>
+      ${team.map(playerRow).join("")}
+    </div>`;
+
+  container.innerHTML = `
+    <div class="lg-panel">
+      <div class="lg-header">
+        <div class="lg-live-badge"><span class="lg-dot"></span>EN VIVO</div>
+        <span class="lg-mode">${game.gameMode}</span>
+        <span class="lg-timer" id="liveGameTimer">${formatDuration(elapsed)}</span>
+      </div>
+      <div class="lg-body">
+        ${teamBlock(blue, "Equipo Azul", "#60a5fa")}
+        <div class="lg-divider">VS</div>
+        ${teamBlock(red, "Equipo Rojo", "#f87171")}
+      </div>
+    </div>`;
+}
+
 // ===============================
 // 🎮 CARGAR HISTORIAL DE PARTIDAS
 // ===============================
@@ -790,7 +951,7 @@ async function loadMatchHistory(player) {
   container.innerHTML = `<div class="pf-loading"><div class="spinner"></div> Cargando partidas...</div>`;
 
   try {
-    const res = await fetch(`http://localhost:3000/matches/${player.puuid}`);
+    const res = await fetch(`/api/matches/${player.puuid}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const matches = await res.json();
     renderMatchHistory(matches, container, player);
@@ -869,6 +1030,7 @@ function renderMatchHistory(matches, container, player) {
             <img class="mc-champ-img" src="${champIcon}" alt="${m.champion}"
               onerror="this.style.opacity='0.3'">
             <span class="mc-champ-lv">${m.champLevel || ""}</span>
+            ${(() => { const url = getRoleIconUrl(m.role); return url ? `<img class="mc-role-icon" src="${url}" alt="${m.role}" onerror="this.style.display='none'">` : ""; })()}
           </div>
           <div class="mc-spells">
             ${(m.summoners || []).map(s =>
@@ -925,11 +1087,127 @@ function buildMatchPlaceholder(player) {
 // ===============================
 fetchDDragonVersion().then(() => {
   cargarJugadores();
-  loadEventData();
+  cargarEvento();
 });
 setInterval(cargarJugadores, 5 * 60 * 1000);
-setInterval(loadEventData, 2 * 60 * 1000);
+setInterval(cargarEvento, 2 * 60 * 1000);
 
+// ===============================
+// ⚔️ SOLOQ CHALLENGE EVENT
+// ===============================
+function scrollToEvent() {
+  document.getElementById("eventSection")?.scrollIntoView({ behavior: "smooth" });
+}
+
+async function cargarEvento() {
+  const loading = document.getElementById("eventLoading");
+  const table   = document.getElementById("eventTable");
+  const pending = document.getElementById("eventPending");
+  const status  = document.getElementById("eventStatus");
+  const btnStop  = document.getElementById("btnEventStop");
+  const btnStart = document.getElementById("btnEventStart");
+
+  if (loading) loading.style.display = "flex";
+  if (table)   table.style.display   = "none";
+  if (pending) pending.style.display = "none";
+
+  try {
+    const res  = await fetch("/api/event");
+    const data = await res.json();
+
+    if (loading) loading.style.display = "none";
+
+    // Actualizar estado visual
+    if (status) {
+      if (data.active) {
+        status.textContent  = "EN CURSO";
+        status.className    = "event-status event-status--active";
+      } else {
+        status.textContent  = "PRÓXIMAMENTE";
+        status.className    = "event-status";
+      }
+    }
+
+    if (btnStart) btnStart.style.display = data.active ? "none"  : "inline-flex";
+    if (btnStop)  btnStop.style.display  = data.active ? "inline-flex" : "none";
+
+    if (!data.active || !data.results?.some(r => r.gained !== null)) {
+      if (pending) pending.style.display = "flex";
+      return;
+    }
+
+    if (table) table.style.display = "table";
+    renderEventTable(data.results);
+
+  } catch (err) {
+    if (loading) loading.style.display = "none";
+    if (pending) pending.style.display = "flex";
+  }
+}
+
+function renderEventTable(results) {
+  const tbody = document.getElementById("eventTbody");
+  if (!tbody) return;
+
+  const max = Math.max(...results.map(r => r.gained ?? 0), 1);
+
+  tbody.innerHTML = results.map((r, i) => {
+    const gained  = r.gained ?? 0;
+    const pct     = Math.max(0, Math.min(100, (gained / max) * 100));
+    const color   = gained > 0 ? "#4ade80" : gained < 0 ? "#f87171" : "#6b7a8d";
+    const sign    = gained > 0 ? "+" : "";
+    const soloQ   = r.soloQ;
+    const tierColor = {
+      IRON:"#6b7280",BRONZE:"#cd7f32",SILVER:"#aab4c8",GOLD:"#f0c060",
+      PLATINUM:"#4ac9a0",EMERALD:"#00e676",DIAMOND:"#4cc9f0",
+      MASTER:"#c084fc",GRANDMASTER:"#ff6b6b",CHALLENGER:"#f72585"
+    }[soloQ?.tier] || "#555e6e";
+
+    const eloText = soloQ?.tier && soloQ.tier !== "UNRANKED"
+      ? `<span style="color:${tierColor}">${soloQ.tier} ${soloQ.rank}</span><span class="ev-lp-small">${soloQ.lp} LP</span>`
+      : `<span class="ev-unranked">Sin ranked</span>`;
+
+    const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `<span class="ev-rank-num">${i+1}</span>`;
+
+    return `
+      <tr class="ev-row">
+        <td class="ev-col-rank">${medal}</td>
+        <td class="ev-col-player">
+          <span class="ev-name">${r.name}</span>
+          <span class="ev-tag">#${r.tag}</span>
+        </td>
+        <td class="ev-col-elo">${eloText}</td>
+        <td class="ev-col-lp" style="color:${tierColor}">${r.currentLP} LP</td>
+        <td class="ev-col-gained" style="color:${color};font-weight:700">${sign}${gained} LP</td>
+        <td class="ev-col-bar">
+          <div class="ev-bar-track">
+            <div class="ev-bar-fill" style="width:${pct}%;background:${color}"></div>
+          </div>
+        </td>
+      </tr>`;
+  }).join("");
+}
+
+async function startEvent() {
+  if (!confirm("¿Iniciar el evento ahora? Se guardará el LP actual de todos los jugadores como punto de partida.")) return;
+  const res = await fetch("/api/event?action=start", { method: "POST" });
+  const data = await res.json();
+  if (data.ok) { alert("✅ Evento iniciado"); cargarEvento(); }
+}
+
+async function stopEvent() {
+  if (!confirm("¿Pausar el evento?")) return;
+  const res = await fetch("/api/event?action=stop", { method: "POST" });
+  const data = await res.json();
+  if (data.ok) { alert("⏸ Evento pausado"); cargarEvento(); }
+}
+
+async function resetEvent() {
+  if (!confirm("¿Resetear el evento? Se borrarán todos los datos acumulados.")) return;
+  const res = await fetch("/api/event?action=reset", { method: "POST" });
+  const data = await res.json();
+  if (data.ok) { alert("↺ Evento reseteado"); cargarEvento(); }
+}
 // ===============================
 // ⚔ EVENTO SOLOQ CHALLENGE
 // ===============================
@@ -959,8 +1237,8 @@ async function loadEventData() {
     // Badge de estado
     if (badge) {
       if (data.active) {
-        badge.textContent = "🟢 EN CURSO";
-        badge.className   = "event-badge event-badge--active";
+        badge.textContent  = "🟢 EN CURSO";
+        badge.className    = "event-badge event-badge--active";
         if (subtitle) subtitle.textContent = `Iniciado el ${new Date(data.startedAt).toLocaleDateString("es-ES", { day:"numeric", month:"long", hour:"2-digit", minute:"2-digit" })}`;
       } else if (data.startedAt && !data.active) {
         badge.textContent = "⏸ PAUSADO";
@@ -974,9 +1252,10 @@ async function loadEventData() {
 
     loading.style.display = "none";
 
+    // Si no hay snapshot todavía, mostrar tabla vacía con -- en LP
     const standings = data.standings || [];
     const hasData   = standings.some(s => s.gained !== null);
-    const maxGained = hasData ? Math.max(...standings.map(s => Math.abs(s.gained || 0)), 1) : 1;
+    const maxGained = hasData ? Math.max(...standings.map(s => s.gained || 0), 1) : 1;
 
     table.style.display = "";
     tbody.innerHTML = standings.map((s, i) => {
@@ -986,15 +1265,17 @@ async function loadEventData() {
         : `<span class="ev-tier" style="color:#555e6e;border-color:#2a3a4a;background:#1a2535">Sin ranked</span>`;
 
       let lpCell = `<span class="ev-lp-none">—</span>`;
+      let barFill = "";
       if (s.gained !== null) {
+        const pct = Math.max(0, Math.min(100, (s.gained / maxGained) * 100));
+        const barColor = s.gained > 0 ? "#4ade80" : s.gained < 0 ? "#f87171" : "#9aa4b2";
         const cls = s.gained > 0 ? "ev-lp-pos" : s.gained < 0 ? "ev-lp-neg" : "ev-lp-zero";
-        lpCell = `<span class="${cls}">${s.gained > 0 ? "+" : ""}${s.gained} LP</span>`;
+        lpCell  = `<span class="${cls}">${s.gained > 0 ? "+" : ""}${s.gained} LP</span>`;
+        barFill = `<div class="ev-bar-fill" style="width:${pct}%;background:${barColor}"></div>`;
       }
 
-      const barPct   = s.gained !== null ? Math.max(0, Math.min(100, (Math.abs(s.gained) / maxGained) * 100)) : 0;
-      const barColor = s.gained > 0 ? "#4ade80" : s.gained < 0 ? "#f87171" : "#4a5a72";
-      const medal    = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `<span style="font-size:0.9rem;color:#3a4a60">${i+1}</span>`;
-      const iconUrl  = `https://ddragon.leagueoflegends.com/cdn/${ddVersion}/img/profileicon/${s.profileIconId || 29}.png`;
+      const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `<span style="font-size:0.9rem;color:#3a4a60">${i+1}</span>`;
+      const iconUrl = `https://ddragon.leagueoflegends.com/cdn/${ddVersion}/img/profileicon/${s.profileIconId || 29}.png`;
 
       return `<tr>
         <td class="ev-rank">${medal}</td>
@@ -1011,15 +1292,22 @@ async function loadEventData() {
         <td>${lpCell}</td>
         <td>
           <div class="ev-bar-wrap">
-            <div class="ev-bar-track">
-              <div class="ev-bar-fill" style="width:${barPct}%;background:${barColor}"></div>
-            </div>
+            <div class="ev-bar-track"><div class="ev-bar-fill" style="width:${
+              s.gained !== null ? Math.max(0,Math.min(100,(s.gained/maxGained)*100)) : 0
+            }%;background:${s.gained > 0 ? "#4ade80" : s.gained < 0 ? "#f87171" : "#4a5a72"}"></div></div>
           </div>
         </td>
       </tr>`;
     }).join("");
 
   } catch (err) {
-    if (loading) loading.innerHTML = `<span style="color:#f87171">Error cargando evento</span>`;
+    if (loading) {
+      loading.innerHTML = `<span style="color:#f87171">Error cargando evento</span>`;
+    }
   }
 }
+
+// Carga el evento al iniciar
+document.addEventListener("DOMContentLoaded", () => {
+  loadEventData();
+});
