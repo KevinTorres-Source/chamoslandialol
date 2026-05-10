@@ -7,8 +7,6 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <!-- Spiegel = fuente body de LoL client (Noto Sans como alternativa más cercana disponible) -->
-  <!-- Beaufort for LOL = fuente de títulos (Cinzel Decorative la aproxima bien) -->
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Outfit:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
@@ -21,18 +19,18 @@
 
   <div class="container">
 
-    <!-- HEADER CENTRADO -->
+    <!-- HEADER -->
     <header>
       <div class="header-center">
         <h1>CHAMOSLAND <span>LOL</span></h1>
       </div>
       <div class="header-actions">
-        <div class="header-btns">
+        <div class="header-buttons">
           <button class="btn-update" id="btnUpdate" onclick="actualizarElo()">
             <span class="btn-icon">↻</span> Actualizar ELO
           </button>
           <button class="btn-event" onclick="scrollToEvent()">
-            ⚔️ SoloQ Challenge
+            ⚔ SOLOQ CHALLENGE
           </button>
         </div>
         <span class="last-update" id="lastUpdate">—</span>
@@ -47,7 +45,7 @@
             <div class="spinner"></div> Cargando jugadores...
           </div>
           <div class="error-msg" id="errorMsg" style="display:none">
-            ⚠️ No se pudo conectar al servidor. ¿Está corriendo en localhost:3000?
+            ⚠️ No se pudo conectar al servidor.
           </div>
           <table>
             <thead>
@@ -96,75 +94,34 @@
       </div>
     </div>
 
-    <!-- SOLOQ CHALLENGE EVENT -->
+    <!-- SOLOQ CHALLENGE -->
     <div class="event-section" id="eventSection">
       <div class="event-header">
-        <div class="event-title-row">
-          <span class="event-icon">⚔️</span>
-          <h2 class="event-title" id="eventTitle">SOLOQ CHALLENGE</h2>
-          <span class="event-status" id="eventStatus">PRÓXIMAMENTE</span>
-        </div>
-        <div class="event-controls" id="eventControls">
-          <button class="btn-event-start" id="btnEventStart" onclick="startEvent()">▶ Iniciar</button>
-          <button class="btn-event-stop"  id="btnEventStop"  onclick="stopEvent()"  style="display:none">⏸ Pausar</button>
-          <button class="btn-event-reset" id="btnEventReset" onclick="resetEvent()">↺ Reset</button>
+        <div class="event-title-block">
+          <span class="event-badge event-badge--upcoming" id="eventBadge">⏸ PRÓXIMAMENTE</span>
+          <h2 class="event-title">SOLOQ <span>CHALLENGE</span></h2>
+          <p class="event-subtitle" id="eventSubtitle">El evento comenzará pronto. Los LP se contarán desde el inicio.</p>
         </div>
       </div>
-      <div class="event-desc">
-        <p>Tabla de LP acumulados desde el inicio del evento. Sin restricción de elo — solo importan los LP ganados.</p>
-      </div>
-      <div class="event-table-wrap">
+      <div class="event-table-wrapper" id="eventTableWrapper">
         <div class="event-loading" id="eventLoading">
-          <div class="spinner"></div> Cargando evento...
+          <div class="spinner"></div> Cargando...
         </div>
         <table class="event-table" id="eventTable" style="display:none">
           <thead>
             <tr>
-              <th class="ev-col-rank">#</th>
-              <th class="ev-col-player">JUGADOR</th>
-              <th class="ev-col-elo">ELO ACTUAL</th>
-              <th class="ev-col-lp">LP TOTALES</th>
-              <th class="ev-col-gained">LP GANADOS</th>
-              <th class="ev-col-bar">PROGRESO</th>
+              <th>#</th>
+              <th>JUGADOR</th>
+              <th>ELO ACTUAL</th>
+              <th>LP GANADOS</th>
+              <th>PROGRESO</th>
             </tr>
           </thead>
           <tbody id="eventTbody"></tbody>
         </table>
-        <div class="event-pending" id="eventPending">
-          <div class="event-pending-icon">⚔️</div>
-          <p>El evento aún no ha comenzado.<br>Cuando empiece, aquí verás el ranking en tiempo real.</p>
-        </div>
       </div>
     </div>
 
-  </div>
-
-  <!-- EVENTO SOLOQ CHALLENGE -->
-  <div class="event-section" id="eventSection">
-    <div class="event-header">
-      <div class="event-title-block">
-        <span class="event-badge" id="eventBadge">⏸ PRÓXIMAMENTE</span>
-        <h2 class="event-title">SOLOQ <span>CHALLENGE</span></h2>
-        <p class="event-subtitle" id="eventSubtitle">El evento comenzará pronto. Los LP se contarán desde el inicio.</p>
-      </div>
-    </div>
-    <div class="event-table-wrapper" id="eventTableWrapper">
-      <div class="event-loading" id="eventLoading">
-        <div class="spinner"></div> Cargando...
-      </div>
-      <table class="event-table" id="eventTable" style="display:none">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>JUGADOR</th>
-            <th>ELO ACTUAL</th>
-            <th>LP GANADOS</th>
-            <th>PROGRESO</th>
-          </tr>
-        </thead>
-        <tbody id="eventTbody"></tbody>
-      </table>
-    </div>
   </div>
 
   <script src="/main.js"></script>
